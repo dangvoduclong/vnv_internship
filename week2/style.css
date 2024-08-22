@@ -1,5 +1,5 @@
 body {
-    background: #352f5b;
+    background: #b2d5a3;
     font-family: "Josefin Sans", sans-serif;
     font-size: 23px;
   }
@@ -17,7 +17,7 @@ body {
   }
   
   .todos li {
-    background: #423a6f;
+    background: #76bd58;
     color: #fff;
   }
   
@@ -30,7 +30,7 @@ body {
   }
   
   .btn:hover {
-    background: #423a6f;
+    background: #d39758;
     color: #fff;
     border-top-width: 1px;
     border-bottom-width: 1px;
