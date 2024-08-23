@@ -86,3 +86,43 @@ for (const [index, value] of numbers.entries()) {
 // fill() điền giá trị vào các phần tử của mảng array.fill(value, start, end)           thay đổi mảng gốc
 
 //////////////////////////////////////////////////////////////// OBJECT METHOD
+
+const person = {
+  name: "John",
+  age: 30,
+  city: "New York",
+};
+// Object.keys()
+const keys = Object.keys(person);
+console.log(keys); // Output: ['name', 'age', 'city']
+
+// Object.values()
+const values = Object.values(person);
+console.log(values); // Output: ['John', 30, 'New York']
+
+// Object.entries()
+const entries = Object.entries(person);
+console.log(entries); // Output: [['name', 'John'], ['age', 30], ['city', 'New York']]
+
+// Object.fromEntries()
+const entries1 = [
+  ["name", "John"],
+  ["age", 30],
+];
+const newPerson = Object.fromEntries(entries1);
+console.log(newPerson); // Output: { name: 'John', age: 30, city: 'New York' }
+
+// Object.assign() Sao chép giá trị của tất cả các thuộc tính từ một hoặc nhiều đối tượng nguồn vào đối tượng đích.
+const newPerson1 = Object.assign({}, person, { city: "London" });
+console.log(newPerson1); // Output: { name: 'John', age: 30, city: 'London' }
+
+// Object.freeze() Đóng băng đối tượng, ngăn không cho thay đổi thuộc tính của nó.
+const frozenPerson = Object.freeze(person);
+console.log(frozenPerson); // Output: { name: 'John', age: 30, city: 'New York' }
+
+// Object.seal() Niêm phong đối tượng, cho phép cập nhật thuộc tính hiện có nhưng không cho phép thêm hoặc xóa thuộc tính.
+const sealedPerson = Object.seal(person);
+console.log(sealedPerson); // Output: { name: 'John', age: 30, city: 'New York' }
+
+// Object.hasOwn() Kiểm tra xem đối tượng có chứa thuộc tính cụ thể không.
+console.log(person.hasOwn("name")); // Output: true
