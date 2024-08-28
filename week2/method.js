@@ -13,7 +13,6 @@ console.log(text.slice(-5)); // Output: "World"
 console.log(text.charAt(1)); // Output: "e"
 ////////////////////////////////////////////////////////////////////////////////// ARRAY METHOD
 
-// Phương thức flat() được sử dụng để làm phẳng nested arrays (default 1)
 let nestedArray = [1, [2, [3, [4]]]];
 console.log(nestedArray.flat()); // Output: [1, 2, [3, [4]]]
 console.log(nestedArray.flat(2)); // Output: [1, 2, 3, [4]]

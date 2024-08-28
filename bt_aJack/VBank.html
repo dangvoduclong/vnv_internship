@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Valens Bank Dashboard</title>
+    <link rel="stylesheet" href="VB.css" />
+  </head>
+  <body>
+    <div class="container">
+      <!-- Header -->
+      <header>
+        <div class="header-left">
+          <img src="logo.png" alt="Valens Bank Logo" class="logo" />
+          <nav>
+            <a href="#" class="active">Dashboard</a>
+            <a href="#">My Wallets</a>
+            <a href="#">My Transactions</a>
+            <a href="#">My Profile</a>
+          </nav>
+        </div>
+        <button class="logout-btn">Logout</button>
+      </header>
+
+      <!-- Welcome Section -->
+      <section class="welcome-section">
+        <h1>Welcome Back, John</h1>
+        <p>Account number: 100TestMe98</p>
+        <p>
+          Your last login was 11:12 AM on Wednesday 7th July, 2021 (Singapore)
+        </p>
+      </section>
+
+      <!-- Wallets Section -->
+      <section class="wallets-section">
+        <div class="wallets-header">
+          <h2>My Wallets</h2>
+          <div class="wallets-actions">
+            <button>Send Funds</button>
+            <button>Crypto</button>
+            <button>Securities</button>
+            <button>View Transactions</button>
+          </div>
+        </div>
+        <div class="wallets-container">
+          <div class="wallet">
+            <h3>Funds Wallet</h3>
+            <p class="amount">1,000,000.00 EUR</p>
+            <button>View Detail</button>
+          </div>
+          <div class="wallet">
+            <h3>Crypto Wallet</h3>
+            <p class="amount">1,000,000.00 ETH</p>
+            <button>View Detail</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Transactions Section -->
+      <section class="transactions-section">
+        <table>
+          <thead>
+            <tr>
+              <th>Order Date</th>
+              <th>Type</th>
+              <th>Action</th>
+              <th>Amount</th>
+              <th>Currency</th>
+              <th>Remarks</th>
+              <th>Order Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>2021-07-13</td>
+              <td>Cash</td>
+              <td>Send</td>
+              <td>343.00</td>
+              <td>EUR</td>
+              <td></td>
+              <td>Success</td>
+            </tr>
+            <tr>
+              <td>2021-07-13</td>
+              <td>Cash</td>
+              <td>Receive</td>
+              <td>343.00</td>
+              <td>EUR</td>
+              <td>Pay back from Louis</td>
+              <td>Success</td>
+            </tr>
+            <tr>
+              <td>2021-07-13</td>
+              <td>Securities</td>
+              <td>Buy</td>
+              <td>343.00</td>
+              <td>EUR</td>
+              <td>ISIN-012345</td>
+              <td>Failed</td>
+            </tr>
+            <tr>
+              <td>2021-07-13</td>
+              <td>Crypto</td>
+              <td>Sell</td>
+              <td>343.00</td>
+              <td>Bitcoin</td>
+              <td>From Bitcoin to Ethereum</td>
+              <td>Success</td>
+            </tr>
+            <tr>
+              <td>2021-07-13</td>
+              <td>Securities</td>
+              <td>Sell</td>
+              <td>343.00</td>
+              <td>EUR</td>
+              <td>ISIN-012345</td>
+              <td>Success</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Footer -->
+      <footer>
+        <select>
+          <option value="en">English</option>
+        </select>
+        <p>&copy; 2021 Valens Bank Ltd</p>
+      </footer>
+    </div>
+  </body>
+</html>

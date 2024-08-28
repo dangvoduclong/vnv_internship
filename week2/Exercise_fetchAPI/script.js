@@ -42,4 +42,5 @@ const addTitleToList = () => {
 document
   .getElementById("fetchButton")
   .addEventListener("click", fetchRandomTitle);
+
 document.getElementById("addButton").addEventListener("click", addTitleToList);

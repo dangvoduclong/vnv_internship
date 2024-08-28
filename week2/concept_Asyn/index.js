@@ -1,3 +1,34 @@
+///////////////////////////////////////////////////////////////////////////////// Promise
+let myPromise = new Promise((resolve, reject) => {
+  let success = true;
+  if (success) {
+    resolve("Operation was successful!");
+  } else {
+    reject("Operation failed.");
+  }
+});
+// Sử dụng Promise
+myPromise
+  .then((result) => {
+    console.log(result);
+  })
+  .catch((error) => {
+    console.error(error);
+  });
+
+///// Hàm cũ sử dụng Promise
+function fetchData() {
+  return fetch("https://api.example.com/data").then((response) =>
+    response.json()
+  );
+}
+
+// Hàm mới sử dụng async/await
+async function fetchData() {
+  const response = await fetch("https://api.example.com/data");
+  return await response.json();
+}
+
 /////////////////////////////////////////////////////////////////////////////// Async/Await
 const fetchMessage = async () => {
   return "Hello, World!";

@@ -1,0 +1,145 @@
+/* styles.css */
+
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f7f7f7;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 0;
+  background-color: #f5f5f5;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  width: 150px;
+  margin-right: 30px;
+}
+
+nav a {
+  margin-right: 20px;
+  text-decoration: none;
+  color: #333;
+  font-weight: bold;
+  padding-bottom: 5px;
+}
+
+nav a.active {
+  border-bottom: 2px solid #000;
+}
+
+.logout-btn {
+  background-color: #007bff;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.welcome-section {
+  background-color: #e8e8e8;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.welcome-section h1 {
+  margin-top: 0;
+}
+
+.wallets-section {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.wallets-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.wallets-actions button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  margin-right: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.wallets-container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.wallet {
+  background-color: #f5f5f5;
+  padding: 20px;
+  border-radius: 8px;
+  width: 48%;
+  text-align: center;
+}
+
+.wallet h3 {
+  margin-top: 0;
+}
+
+.amount {
+  font-size: 24px;
+  margin: 20px 0;
+}
+
+.transactions-section {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.transactions-section table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.transactions-section th,
+.transactions-section td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+footer {
+  background-color: #007bff;
+  color: white;
+  text-align: center;
+  padding: 10px;
+  border-radius: 5px;
+  margin-top: 20px;
+}
+
+footer select {
+  background-color: #fff;
+  border: none;
+  padding: 5px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 20px;
+}

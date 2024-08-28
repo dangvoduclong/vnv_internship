@@ -2,9 +2,32 @@
 const element = document.getElementById("myElementId");
 const elements = document.getElementsByClassName("myClass");
 const elements = document.getElementsByTagName("div");
-const element = document.querySelector(".myClass"); // Selects the first element with class 'myClass'
-const element = document.querySelector("#myElementId"); // Selects the element with id 'myElementId'
-const elements = document.querySelectorAll(".myClass"); // Selects all elements with class 'myClass'
+const element = document.querySelector(".myClass");
+const element = document.querySelector("#myElementId");
+const elements = document.querySelectorAll(".myClass");
+const element = document.querySelector('input[name="name"][type="text"]');
+const element = document.querySelector('input[name="name"].a#b');
+const element = document.querySelector(
+  'input[type="radio"][name="na"]:checked'
+);
+const firstInputInForm = document.querySelector("#myForm input");
+// Chọn phần tử <li> thứ hai trong một danh sách
+const secondListItem = document.querySelector("ul li:nth-of-type(2)");
+// Chọn <span> nằm trong <div> với lớp 'container'
+const spanInContainer = document.querySelector("div.container span");
+// Chọn phần tử input với thuộc tính placeholder là 'Search'
+const searchInput = document.querySelector('input[placeholder="Search"]');
+// Chọn phần tử <button> được kích hoạt (active)
+const activeButton = document.querySelector("button:active");
+// Chọn phần tử <input> bị vô hiệu hóa
+const disabledInput = document.querySelector("input:disabled");
+// Chọn phần tử <li> thứ ba bên trong danh sách có lớp 'items'
+const thirdListItem = document.querySelector(".items li:nth-of-type(3)");
+// Chọn phần tử <input> có kiểu là 'text' và đã được chọn
+const textInput = document.querySelector('input[type="text"]:focus');
+
+// Chọn phần tử <div> có kiểu hiển thị là 'none'
+const hiddenDiv = document.querySelector('div[style="display: none;"]');
 
 ///////////////////////////////// Modifying Content
 const element = document.getElementById("myElementId");

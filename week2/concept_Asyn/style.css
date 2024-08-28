@@ -1,0 +1,15 @@
+.image-gallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px; /* Khoảng cách giữa các hình ảnh */
+}
+
+.image-item {
+  text-align: center; /* Căn giữa ảnh và tiêu đề */
+}
+
+.image-caption {
+  margin-top: 8px; /* Khoảng cách giữa ảnh và tiêu đề */
+  font-size: 14px; /* Kích thước chữ của tiêu đề */
+  color: #333; /* Màu chữ của tiêu đề */
+}
