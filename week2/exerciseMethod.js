@@ -272,3 +272,9 @@ student2.forEach((std) => {
     : console.log(`${std.name} Needs Improvement`);
 });
 console.log("-------------------------------------------------");
+
+// -------------------------------- SOME --------------------
+const hasSomeOver90 = student2.some((s) => s.score > 90);
+console.log(hasSomeOver90);
+const allOver50 = student2.every((s) => s.score > 20);
+console.log(allOver50);

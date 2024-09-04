@@ -125,3 +125,45 @@ console.log(sealedPerson); // Output: { name: 'John', age: 30, city: 'New York' 
 
 // Object.hasOwn() Kiểm tra xem đối tượng có chứa thuộc tính cụ thể không.
 console.log(person.hasOwn("name")); // Output: true
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+const transactions = [
+  { userId: 1, amount: 25, date: "2024-01-15", name: "Alice" },
+  { userId: 2, amount: 5, date: "2024-03-20", name: "Bob" },
+  { userId: 1, amount: 75, date: "2023-12-25", name: "Alice" },
+  { userId: 3, amount: 50, date: "2024-06-10", name: "Charlie" },
+  { userId: 2, amount: 20, date: "2024-07-22", name: "Bob" },
+  { userId: 4, amount: 30, date: "2024-08-30", name: "David" },
+  { userId: 1, amount: 10, date: "2024-01-05", name: "Alice" },
+  { userId: 3, amount: 40, date: "2024-11-15", name: "Charlie" },
+];
+
+const filterTrans = transactions.filter((t) => {
+  const date = new Date(t.date).getFullYear();
+  return t.amount > 20 && date === 2024;
+});
+console.log(filterTrans);
+
+const sumTransPerUser = transactions.reduce((acc, { name, amount }) => {
+  acc[name] = (acc[name] || 0) + amount;
+  return acc;
+}, {});
+console.log(sumTransPerUser);
+
+const sortUsers = Object.entries(sumTransPerUser).sort((a, b) => b[1] - a[1]);
+console.log(sortUsers);
+const sortedUsers = Object.entries(sumTransPerUser).sort(
+  ([nameA, totalA], [nameB, totalB]) => {
+    if (totalB !== totalA) {
+      return totalB - totalA; // Sắp xếp theo số tiền giảm dần
+    }
+    return nameA.localeCompare(nameB); // Sắp xếp theo tên người dùng nếu số tiền bằng nhau
+  }
+);
+console.log(sortedUsers);
+
+const report = sortedUsers
+  .map(([name, total]) => `${name}: (${total})`)
+  .join("\n");
+console.log(report);

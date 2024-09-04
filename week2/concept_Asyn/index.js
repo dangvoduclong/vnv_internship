@@ -61,13 +61,13 @@ const handleOperation = async () => {
 handleOperation();
 
 // Chạy nhiều Promise đồng thời
-const fetchData1 = () =>
+const fetchData3 = () =>
   new Promise((resolve) => setTimeout(() => resolve("Data 1"), 1000));
-const fetchData2 = () =>
+const fetchData4 = () =>
   new Promise((resolve) => setTimeout(() => resolve("Data 2"), 1500));
 
 const fetchAllData = async () => {
-  const [data1, data2] = await Promise.all([fetchData1(), fetchData2()]);
+  const [data1, data2] = await Promise.all([fetchData3(), fetchData4()]);
   console.log(data1); // Data 1
   console.log(data2); // Data 2
 };
@@ -164,13 +164,13 @@ const handleAsyncOperation = async () => {
 
 handleAsyncOperation();
 
-const asyncTask1 = () =>
+const asyncTask3 = () =>
   new Promise((resolve) => setTimeout(() => resolve("Task 1 completed"), 1000));
-const asyncTask2 = () =>
+const asyncTask4 = () =>
   new Promise((resolve) => setTimeout(() => resolve("Task 2 completed"), 1500));
 
 const handleTasks = async () => {
-  const results = await Promise.all([asyncTask1(), asyncTask2()]);
+  const results = await Promise.all([asyncTask3(), asyncTask4()]);
   console.log(results); // ['Task 1 completed', 'Task 2 completed']
 };
 

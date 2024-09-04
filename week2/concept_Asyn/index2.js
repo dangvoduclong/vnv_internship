@@ -33,6 +33,7 @@ httpGetAsync("http://picsum.photos/200/300", (data) => {
   });
 });
 
+//------------------------------------------------ PROMISE --------------------------------------------------
 const currentPromise = new Promise((resolve, reject) => {
   let condition = true;
   condition
@@ -48,7 +49,6 @@ currentPromise
   })
   .catch((err) => console.log(err));
 
-//------------------------------------------------ PROMISE --------------------------------------------------
 const httpGetAsync2 = (theUrl, resolve) => {
   let xmlHttp = new XMLHttpRequest();
   xmlHttp.onreadystatechange = () => {
