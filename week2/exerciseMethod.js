@@ -35,6 +35,26 @@ const newArrKeyPeo = people.map((peo) => peo.name);
 console.log(newArrKeyPeo);
 console.log("-------------------------------------------------");
 
+console.log("cau 4,1--------------------------------------------");
+const newArrUpdateAge = people.map((peo) => {
+  return { ...peo, age: peo.age + 1 };
+});
+console.log(newArrUpdateAge);
+console.log("-------------------------------------------------");
+
+console.log("cau 4,2--------------------------------------------");
+const person = {
+  name: "Alice",
+  age: 30,
+  occupation: "Engineer",
+};
+const personArr = Object.keys(person).map((key) => ({
+  key: key,
+  value: person[key],
+}));
+console.log(personArr);
+console.log("-------------------------------------------------");
+
 console.log("cau 5--------------------------------------------");
 const newArrChange = arrNum.map((num) => `$${num}`);
 console.log(newArrChange);
