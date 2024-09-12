@@ -107,12 +107,12 @@ const average = students.map((std) => {
 console.log(average);
 console.log("-------------------------------------------------");
 
+console.log("cau 11-------------------------------------------");
 const products = [
   { name: "Laptop", price: 1200 },
   { name: "Phone", price: 800 },
   { name: "Tablet", price: 400 },
 ];
-console.log("cau 11-------------------------------------------");
 const newProduct = products.map((p) => {
   return {
     name: p.name,
