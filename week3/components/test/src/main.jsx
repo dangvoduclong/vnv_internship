@@ -5,8 +5,10 @@ import "./index.css";
 import Tet from "./Tet.jsx";
 
 createRoot(document.getElementById("root")).render(
-  <StrictMode>
+  //<StrictMode>
+  <>
     <App />
     <Tet />
-  </StrictMode>
+  </>
+  //</StrictMode>
 );
