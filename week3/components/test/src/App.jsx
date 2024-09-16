@@ -9,143 +9,91 @@ import Way2 from "./components/Way2";
 import UpdateState from "./components/UpdateState";
 import HoldValueState from "./components/HoldValueState";
 import TestEffApi from "./components/TestEffApi";
-
-function ExpensiveCalculation(num) {
-  console.log("Render ExpensiveCalculator");
-  return num * 2;
-}
+import TestUseRef from "./components/TestUseRef";
+import TestRefDOM from "./components/TestRefDOM";
+import LazyInitial from "./components/LazyInitial";
+import TestUseMemo1 from "./components/TestUseMemo1";
+import TestUseMemo2 from "./components/TestUseMemo2";
+import UpdateObjState from "./components/UpdateObjState";
+import TestUseMemo3 from "./components/TestUseMemo3";
+import TestUseEffect from "./components/TestUseEffect";
+import TestUseCallBack from "./components/TestUseCallBack";
+import Test from "./components/Test";
 
 function App() {
-  const [number, setNumber] = useState(0);
-  const [theme, setTheme] = useState("light");
-
-  const themeStyle = {
-    backgroundColor: theme === "light" ? "#fff" : "#333",
-    color: theme === "light" ? "#000" : "#fff",
-  };
-  const [count, setCount] = useState(0);
-
-  // update state asynchronous -> not batch
-  const increaseAsync = () => {
-    setTimeout(() => {
-      //setNumber(number + 1);
-      setNumber((cur) => cur + 1);
-    }, 2000);
-  };
-  // update obj state
-  const [user, setUser] = useState({
-    name: "John",
-    age: 30,
-    address: {
-      city: "New York",
-      state: "NY",
-    },
-  });
-  console.log(user);
-  const handleChangeObj = (e) => {
-    setUser({ ...user, name: e.target.value });
-  };
-  const [form, setForm] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-  });
-  const handleChangeForm = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-  console.log(form);
-
-  /////////////////////////////////////////////////// useMemo
-  const countValue = count;
-  const countMemoValue = useMemo(() => count, [count]);
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const u = useMemo(() => ({ name: "John Wick" }), []);
-  const doubledNumber = useMemo(() => {
-    return ExpensiveCalculation(number);
-  }, [number]);
+
   return (
     <>
+      <Test />
+      {/* <h1>useState</h1>
       <div>
         <UpdateState />
       </div>
-      <hr />
+      <br />
+      <div>
+        <div>Update obj</div>
+        <UpdateObjState />
+      </div>
+      <br />
       <div>
         <HoldValueState />
       </div>
-      <hr />
-
       <div>
-        <button onClick={increaseAsync}>Increase Async</button>
-        <h1>{number}</h1>
+        <LazyInitial />
       </div>
+      <br />
+      <div>
+        <ExWay2Radio />
+      </div>
+      <hr />
+      <div>
+        <h1>useRef</h1>
+        <TestUseRef />
+        <br />
+        <TestRefDOM />
+      </div>
+      <hr />
       <div>
         <h1>useMemo Example</h1>
-        <input
-          type="number"
-          value={number}
-          onChange={(e) => setNumber(parseInt(e.target.value))}
-        />
-        <button onClick={() => setNumber(number + 1)}>Click number</button>
-        <button onClick={() => setTheme(theme === "light" ? "dark" : "light")}>
-          Đổi Theme
-        </button>
-        <div style={themeStyle}>Kết quả: {doubledNumber}</div>
+        <TestUseMemo1 />
+        <br />
+        <TestUseMemo2 />
+        <br />
+        <TestUseMemo3 />
       </div>
-      <div className="App">
-        <div className="wrapper">
-          <button onClick={() => setCount(count + 1)}>Click</button>
-          <div>Count: {countValue}</div>
-          <div>Count Memo: {countMemoValue}</div>
-
-          <br />
-          <input value={name} onChange={(e) => setName(e.target.value)} />
-          <NameDisplay name={name} />
-          <hr />
-          <input value={email} onChange={(e) => setEmail(e.target.value)} />
-          <EmailDisplay email={email} />
-        </div>
+      <br />
+      <div>
+        <h1>React.memo</h1>
+        <input value={name} onChange={(e) => setName(e.target.value)} />
+        <NameDisplay name={name} />
+        <hr />
+        <input value={email} onChange={(e) => setEmail(e.target.value)} />
+        <EmailDisplay email={email} />
+        <br />
         <div>
           <ChildComponent u={u} />
-          <h1>END</h1>
         </div>
-      </div>
-      <div>
-        <div>Update obj</div>
-        <input type="text" onChange={handleChangeObj} />
-      </div>
-      <div>
-        <input
-          type="text"
-          onChange={handleChangeForm}
-          name="lastName"
-          placeholder="Last Name"
-        />
-        <input
-          type="text"
-          onChange={handleChangeForm}
-          name="firstName"
-          placeholder="First Name"
-        />
-        <input
-          type="text"
-          onChange={handleChangeForm}
-          name="email"
-          placeholder="Email"
-        />
       </div>
 
       <div>
         <h4>Test Way Binding</h4>
         <Way />
         <Way2 />
-        <ExWay2Radio />
       </div>
       <hr />
       <div>
+        <h1>Use Effect</h1>
         <TestEffApi />
+        <br />
+        <TestUseEffect />
       </div>
       <hr />
+      <div>
+        <TestUseCallBack />
+      </div> */}
     </>
   );
 }

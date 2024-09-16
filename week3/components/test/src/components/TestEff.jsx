@@ -23,6 +23,8 @@ const TestEff = () => {
 
     // clean up
     return () => {
+      console.log("clean up scroll");
+
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);

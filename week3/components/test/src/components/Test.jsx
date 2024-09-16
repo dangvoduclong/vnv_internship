@@ -1,14 +1,26 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+const Content = () => {
+  const [posts, setPosts] = useState([]);
+  console.log(posts);
 
+  useEffect(() => {
+    fetch(`https://jsonplaceholder.typicode.com/posts`)
+      .then((res) => res.json())
+      .then((posts) => {
+        setTimeout(() => {
+          setPosts(posts);
+        }, 5000);
+      });
+  }, []);
+  return <div>Content</div>;
+};
 const Test = () => {
-  const [value, setValue] = useState("");
-  const handleChange = (e) => {
-    setValue(e.target.value);
-  };
+  const [show, setShow] = useState(false);
+
   return (
     <div>
-      <input type="text" value={value} onChange={handleChange} />
-      <p>{value}</p>
+      {show && <Content />}
+      <button onClick={() => setShow(!show)}>Show</button>
     </div>
   );
 };
