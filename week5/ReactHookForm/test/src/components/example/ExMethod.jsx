@@ -38,14 +38,14 @@ const ExMethod = () => {
   };
   const handleReset = () => {
     reset({
-      name: "",
-      email: "",
-      country: "",
+      name: "aaa",
+      email: "a",
+      country: "a",
     });
   };
 
   const handleTrigger = async () => {
-    const result = await trigger();
+    const result = await trigger("name");
     console.log("Validation result: ", result);
   };
   const handleGetValues = () => {

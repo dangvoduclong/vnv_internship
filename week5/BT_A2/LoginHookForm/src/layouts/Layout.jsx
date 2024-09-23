@@ -1,55 +1,33 @@
 import { useEffect } from "react";
-import { Link, Outlet, useNavigate } from "react-router-dom";
-
+import { Outlet, useNavigate } from "react-router-dom";
+import { useUser } from "../context/User";
+import Header from "../components/header";
+import Footer from "../components/footer";
+import Sidebar from "../components/sidebar";
 const Layout = () => {
+  const { userData, setUserData } = useUser();
   const navigate = useNavigate();
-  const handleOnClick = () => {
-    localStorage.removeItem("data");
-    navigate("/signup");
+  const handleLogout = () => {
+    setUserData(null);
+    navigate("/login");
   };
   useEffect(() => {
-    const getData = JSON.parse(localStorage.getItem("data"));
-    if (!getData) {
-      navigate("/signup");
+    if (!userData) {
+      navigate("/login");
     }
   }, []);
   return (
     <div>
-      <header className="bg-teal-400">
-        <nav className="flex justify-between w-full bg-purple-500 text-white p-4">
-          <a href="#">
-            <span className="font-semibold text-xl tracking-tight">Title</span>
-          </a>
-          <div className="md:items-center md:w-auto flex">
-            <div className="md:flex hidden">
-              <Link
-                to="/dashboard"
-                className="block md:text-white mr-4"
-                href="#"
-              >
-                Home
-              </Link>
-              <Link to="/about" className="block md:text-white mr-4" href="#">
-                About
-              </Link>
-              <Link to="/contact" className="block md:text-white mr-4" href="#">
-                Contact
-              </Link>
-            </div>
-            <div className="flex text-sm">
-              <button
-                className="p-2 ml-2 bg-teal-500 text-gray-100 font-semibold leading-none border border-teal-600 rounded hover:border-transparent hover:bg-teal-600"
-                href="#"
-                onClick={handleOnClick}
-              >
-                Log out
-              </button>
-            </div>
-          </div>
-        </nav>
-      </header>
+      <Header handleLogout={handleLogout} />
 
-      {<Outlet />}
+      <div className="flex flex-grow">
+        <Sidebar className="w-1/4 bg-gray-200" />
+        <div className="flex-grow p-4">
+          <Outlet />
+        </div>
+      </div>
+
+      <Footer />
     </div>
   );
 };

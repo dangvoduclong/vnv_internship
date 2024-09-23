@@ -68,7 +68,7 @@ const FormInput = ({ input, values, handleChange, errors, handleBlur }) => {
             label={input.label}
             error={!!errors[input.name]}
           />
-          {console.log("danny", values)}
+          {console.log(values)}
           {errors[input.name] && (
             <p className="text-red-500">{errors[input.name]}</p>
           )}

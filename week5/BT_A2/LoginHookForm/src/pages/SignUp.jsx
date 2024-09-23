@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -15,48 +15,82 @@ import {
   IconButton,
 } from "@mui/material";
 import { useNavigate } from "react-router";
+import { useUser } from "../context/User";
+import dataCity from "../data/dataCity";
 
 const schema = yup
   .object({
-    firstName: yup.string().required("Tieng viet"),
+    firstName: yup.string().required(),
     lastName: yup.string().required(),
     hobby: yup.string().required(),
     gender: yup.string().required(),
     email: yup.string().required(),
     phoneNumber: yup.number().positive().integer().required(),
     passWord: yup.string().required(),
-    comfirmPassWord: yup.string().required(),
+    confirmPassWord: yup
+      .string()
+      .oneOf([yup.ref("passWord"), null], "Passwords must match")
+      .required(),
   })
   .required();
+
 function SignUp() {
+  const [country, setCountry] = useState("");
+  const [city, setCity] = useState("");
+  const [message, setMessage] = useState({ country: "", city: "" });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const { setUserData } = useUser();
 
   const handleClickShowPassword = () => setShowPassword(!showPassword);
   const handleClickShowConfirmPassword = () =>
     setShowConfirmPassword(!showConfirmPassword);
 
-  useEffect(() => {
-    const getData = JSON.parse(localStorage.getItem("data"));
-    if (getData) {
-      navigate("/dashboard");
-    }
-  }, []);
-
   const {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm({
     resolver: yupResolver(schema),
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+      hobby: "",
+      gender: "",
+      email: "",
+      phoneNumber: "",
+      passWord: "",
+      confirmPassWord: "",
+    },
   });
-  const navigate = useNavigate(); // ham chuyen trang
+
+  const navigate = useNavigate();
+
   const onSubmit = (data) => {
-    localStorage.setItem("data", JSON.stringify(data));
-    navigate("/dashboard");
+    if (city === "") {
+      setMessage({ ...message, country: "Please select country" });
+    }
+    if (country === "") {
+      setMessage({ ...message, city: "Please select city" });
+    }
+    if (country === "" || city === "") {
+      return;
+    }
+    setUserData({
+      ...data,
+      country,
+      city,
+    });
+    navigate("/login");
   };
+
+  const handleReset = () => {
+    reset();
+  };
+
   return (
-    <div className="flex justify-center items-center h-screen bg-gray-100">
+    <div className="flex justify-center items-center  bg-gray-100">
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="bg-white p-8 rounded shadow-md w-full max-w-md "
@@ -119,6 +153,51 @@ function SignUp() {
           </div>
         </div>
 
+        <div className="mb-4 flex space-x-4">
+          <TextField
+            onChange={(e) => {
+              setCountry(e.target.value);
+              setCity("");
+              setMessage({ ...message, country: "" });
+            }}
+            fullWidth
+            select
+            error={!!message.country}
+            helperText={message.country}
+            label="Country"
+            variant="outlined"
+          >
+            <MenuItem disabled value=""></MenuItem>
+            {dataCity.map((item, index) => (
+              <MenuItem key={index} value={index}>
+                {item.name}
+              </MenuItem>
+            ))}
+          </TextField>
+
+          <TextField
+            onChange={(e) => {
+              setCity(e.target.value);
+              setMessage({ ...message, city: "" });
+            }}
+            fullWidth
+            select
+            error={!!message.city}
+            helperText={message.city}
+            label="City"
+            variant="outlined"
+            value={city}
+          >
+            <MenuItem disabled value=""></MenuItem>
+            {country !== "" &&
+              dataCity[country].cities.map((item, index) => (
+                <MenuItem key={index} value={index}>
+                  {item}
+                </MenuItem>
+              ))}
+          </TextField>
+        </div>
+
         <div className="mb-4">
           <TextField
             {...register("email")}
@@ -168,7 +247,7 @@ function SignUp() {
 
         <div className="mb-6">
           <TextField
-            {...register("comfirmPassWord")}
+            {...register("confirmPassWord")}
             fullWidth
             label="Confirm Password"
             variant="outlined"
@@ -186,8 +265,8 @@ function SignUp() {
                 </InputAdornment>
               ),
             }}
-            error={errors.comfirmPassWord}
-            helperText={errors.comfirmPassWord?.message}
+            error={errors.confirmPassWord}
+            helperText={errors.confirmPassWord?.message}
           />
         </div>
         <Button
@@ -198,6 +277,17 @@ function SignUp() {
           className="bg-blue-500 hover:bg-blue-600"
         >
           SIGN UP
+        </Button>
+        <br />
+        <br />
+        <Button
+          type="button"
+          fullWidth
+          variant="outlined"
+          color="primary"
+          onClick={handleReset}
+        >
+          RESET
         </Button>
       </form>
     </div>
