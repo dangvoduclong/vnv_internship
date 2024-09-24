@@ -1,282 +1,341 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import {
   TextField,
   Button,
   InputAdornment,
   IconButton,
   MenuItem,
+  Select,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+  FormControl,
+  InputLabel,
 } from "@mui/material";
 import { useNavigate } from "react-router";
-import { useUser } from "../context/User";
+import { useAuth } from "../context/AuthContext";
 import dataCity from "../data/dataCity";
+import InputField from "../components/form/InputField";
+import usePassVisibility from "../hooks/usePassVisibility";
 
 const schema = yup
   .object({
-    firstName: yup.string().required(""),
-    lastName: yup.string().required(),
-    hobby: yup.string().required(),
-    gender: yup.string().required(),
-    email: yup.string().required(),
-    phoneNumber: yup.number().positive().integer().required(),
-    passWord: yup.string().required(),
+    firstName: yup.string().required("First name is required"),
+    lastName: yup.string().required("Last name is required"),
+    hobby: yup.string().required("Hobby is required"),
+    gender: yup.string().required("Gender is required"),
+    email: yup.string().required("Email is required"),
+    phoneNumber: yup
+      .number()
+      .positive()
+      .integer()
+      .required("Phone number is required"),
+    country: yup.string().required("Country is required"),
+    city: yup.string().required("City is required"),
+    passWord: yup.string().required("Password is required"),
     confirmPassWord: yup
       .string()
       .oneOf([yup.ref("passWord"), null], "Passwords must match")
-      .required(),
+      .required("Confirm password is required"),
   })
   .required();
 
 const DashBoard = () => {
-  const [country, setCountry] = useState(null);
-  const [city, setCity] = useState(null);
-  const { userData: data, setUserData } = useUser();
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
-  const handleClickShowPassword = () => setShowPassword(!showPassword);
-  const handleClickShowConfirmPassword = () =>
-    setShowConfirmPassword(!showConfirmPassword);
-
-  useEffect(() => {
-    setCountry(data?.country);
-    setCity(data?.city);
-  }, [data]);
+  const { userData: data, login } = useAuth();
+  const navigate = useNavigate();
+  const {
+    showPassword,
+    showConfirmPassword,
+    handleClickShowPassword,
+    handleClickShowConfirmPassword,
+  } = usePassVisibility();
 
   const {
-    register,
+    control,
     handleSubmit,
     formState: { errors },
+    reset,
+    watch,
+    setValue,
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
-      firstName: data?.firstName,
-      lastName: data?.lastName,
-      hobby: data?.hobby,
-      gender: data?.gender,
-      email: data?.email,
-      phoneNumber: data?.phoneNumber,
-      passWord: data?.passWord,
-      confirmPassWord: data?.confirmPassWord,
+      firstName: data?.firstName || "",
+      lastName: data?.lastName || "",
+      hobby: data?.hobby || "",
+      gender: data?.gender || "",
+      country: data?.country || "",
+      city: data?.city || "",
+      email: data?.email || "",
+      phoneNumber: data?.phoneNumber || "",
+      passWord: data?.passWord || "",
+      confirmPassWord: data?.confirmPassWord || "",
     },
   });
-  const navigate = useNavigate();
-  const onSubmit = (data) => {
-    setUserData({
-      ...data,
-      country,
-      city,
-    });
 
+  useEffect(() => {
+    reset(data);
+  }, [data, reset]);
+
+  const onSubmit = (formData) => {
+    login(formData);
     alert("Your information has been updated.");
     navigate("/personalInformation");
   };
 
+  const country = watch("country");
+  useEffect(() => {
+    const selectedCountry = data?.country;
+
+    if (country && country !== selectedCountry) {
+      const selectedCity =
+        dataCity.find((item) => item.nameCountry === country)?.cities[0] || "";
+      setValue("city", selectedCity);
+    }
+  }, [country, setValue]);
+
   return (
-    <div className="flex justify-center items-center bg-gray-100">
+    <div className="flex justify-center items-center min-h-screen bg-gray-100">
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="bg-white p-4 sm:p-6 md:p-8 rounded shadow-md w-full max-w-md sm:max-w-sm md:max-w-md lg:max-w-xl xl:max-w-2xl "
+        className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md"
       >
-        <h1 className="text-2xl font-bold mb-6">Update</h1>
+        <h1 className="text-2xl font-semibold text-center text-gray-800 mb-6">
+          Update Information
+        </h1>
+
+        {/* First Name */}
         <div className="mb-4">
-          <TextField
-            {...register("firstName")}
-            fullWidth
+          <InputField
+            name="firstName"
+            control={control}
+            errors={errors}
             label="First Name"
-            variant="outlined"
-            error={errors.firstName}
-            helperText={errors.firstName?.message}
           />
         </div>
 
+        {/* Last Name */}
         <div className="mb-4">
-          <TextField
-            {...register("lastName")}
-            fullWidth
+          <InputField
+            name="lastName"
+            control={control}
+            errors={errors}
             label="Last Name"
-            variant="outlined"
-            error={errors.lastName}
-            helperText={errors.lastName?.message}
           />
         </div>
 
+        {/* Hobby */}
         <div className="mb-4 flex space-x-4">
-          <label htmlFor="">Hobby:</label>
-          <select className="mb-4" {...register("hobby")}>
-            <option value="music">Music</option>
-            <option value="reading">Reading</option>
-            <option value="sports">Sports</option>
-          </select>
-          <p className="text-red-500">{errors.hobby?.message}</p>
-
-          <div className="mb-4 flex space-x-4">
-            <span className="mr-2">Gender:</span>
-            <label htmlFor="male">male</label>
-            <input
-              className="ml-2"
-              type="radio"
-              {...register("gender")}
-              value="male"
+          <FormControl variant="outlined" fullWidth>
+            <InputLabel id="hobby-label">Hobby</InputLabel>
+            <Controller
+              name="hobby"
+              control={control}
+              render={({ field }) => (
+                <Select
+                  {...field}
+                  labelId="hobby-label"
+                  label="Hobby"
+                  className="border rounded-md shadow-sm"
+                >
+                  <MenuItem value="music">Music</MenuItem>
+                  <MenuItem value="reading">Reading</MenuItem>
+                  <MenuItem value="sports">Sports</MenuItem>
+                </Select>
+              )}
             />
-            <label className="ml-2" htmlFor="female">
-              female
-            </label>
+          </FormControl>
 
-            <input
-              className="ml-2"
-              type="radio"
-              {...register("gender")}
-              value="female"
+          {/* Gender */}
+          <div className="flex items-center">
+            <span className="mr-2 text-gray-700">Gender:</span>
+            <Controller
+              name="gender"
+              control={control}
+              defaultValue="male"
+              render={({ field }) => (
+                <RadioGroup {...field}>
+                  <FormControlLabel
+                    value="male"
+                    control={<Radio />}
+                    label="Male"
+                  />
+                  <FormControlLabel
+                    value="female"
+                    control={<Radio />}
+                    label="Female"
+                  />
+                </RadioGroup>
+              )}
             />
           </div>
         </div>
 
-        {/* <div className="mb-4 flex space-x-4">
-          <label htmlFor="">Country:</label>
-          <select
-            className="mb-4"
-            onChange={(e) => setCountry(e.target.value)}
-            value={country}
-          >
-            {dataCity.map((item, index) => (
-              <option key={index} value={index}>
-                {item.name}
-              </option>
-            ))}
-          </select>
-
-          <div className="mb-4 flex space-x-4">
-            <label className="mr-2">Cities:</label>
-            <select
-              className="mb-4"
-              onChange={(e) => setCity(e.target.value)}
-              value={city}
-            >
-              {country !== null &&
-                dataCity[country].cities.map((item, index) => (
-                  <option key={index} value={index}>
-                    {item}
-                  </option>
-                ))}
-            </select>
-          </div>
-        </div> */}
-
+        {/* Country */}
         <div className="mb-4">
-          <TextField
-            onChange={(e) => setCountry(e.target.value)}
-            value={country}
-            fullWidth
-            select
-            variant="outlined"
-          >
-            {dataCity.map((item, index) => (
-              <MenuItem key={index} value={index}>
-                {item.name}
-              </MenuItem>
-            ))}
-          </TextField>
+          <FormControl variant="outlined" fullWidth>
+            <InputLabel id="country-label">Country</InputLabel>
+            <Controller
+              name="country"
+              control={control}
+              render={({ field }) => (
+                <Select
+                  {...field}
+                  labelId="country-label"
+                  label="Country"
+                  className="border rounded-md shadow-sm"
+                >
+                  {dataCity.map((item, index) => (
+                    <MenuItem key={index} value={item.nameCountry}>
+                      {item.nameCountry}
+                    </MenuItem>
+                  ))}
+                </Select>
+              )}
+            />
+          </FormControl>
         </div>
 
+        {/* City */}
         <div className="mb-4">
-          <TextField
-            onChange={(e) => setCity(e.target.value)}
-            value={city}
-            fullWidth
-            select
-            variant="outlined"
-          >
-            {country !== null &&
-              dataCity[country].cities.map((item, index) => (
-                <MenuItem key={index} value={index}>
-                  {item}
-                </MenuItem>
-              ))}
-          </TextField>
+          <FormControl variant="outlined" fullWidth>
+            <InputLabel id="city-label">City</InputLabel>
+            <Controller
+              name="city"
+              control={control}
+              render={({ field }) => (
+                <Select
+                  {...field}
+                  labelId="city-label"
+                  label="City"
+                  disabled={!country}
+                  className="border rounded-md shadow-sm"
+                >
+                  {country &&
+                    dataCity
+                      .find((item) => item.nameCountry === country)
+                      ?.cities.map((item, index) => (
+                        <MenuItem key={index} value={item}>
+                          {item}
+                        </MenuItem>
+                      ))}
+                </Select>
+              )}
+            />
+          </FormControl>
         </div>
 
+        {/* Email */}
         <div className="mb-4">
-          <TextField
-            {...register("email")}
-            fullWidth
-            label="Email"
-            variant="outlined"
-            error={errors.email}
-            helperText={errors.email?.message}
+          <Controller
+            name="email"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                fullWidth
+                label="Email"
+                variant="outlined"
+                error={!!errors.email}
+                helperText={errors.email?.message}
+                className="border rounded-md"
+              />
+            )}
           />
         </div>
 
+        {/* Phone Number */}
         <div className="mb-4">
-          <TextField
-            {...register("phoneNumber")}
-            fullWidth
-            label="Phone Number"
-            variant="outlined"
-            error={errors.phoneNumber}
-            helperText={errors.phoneNumber?.message}
+          <Controller
+            name="phoneNumber"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                fullWidth
+                label="Phone Number"
+                variant="outlined"
+                error={!!errors.phoneNumber}
+                helperText={errors.phoneNumber?.message}
+                className="border rounded-md"
+              />
+            )}
           />
         </div>
 
+        {/* Password */}
         <div className="mb-4">
-          <TextField
-            {...register("passWord")}
-            fullWidth
-            label="Password"
-            variant="outlined"
-            type={showPassword ? "text" : "password"}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={handleClickShowPassword}
-                    edge="end"
-                  >
-                    {showPassword ? <Visibility /> : <VisibilityOff />}
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
-            error={errors.passWord}
-            helperText={errors.passWord?.message}
+          <Controller
+            name="passWord"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                fullWidth
+                label="Password"
+                variant="outlined"
+                type={showPassword ? "text" : "password"}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={handleClickShowPassword}>
+                        {showPassword ? <Visibility /> : <VisibilityOff />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+                error={!!errors.passWord}
+                helperText={errors.passWord?.message}
+                className="border rounded-md"
+              />
+            )}
           />
         </div>
 
-        <div className="mb-6">
-          <TextField
-            {...register("confirmPassWord")}
-            fullWidth
-            label="Confirm Password"
-            variant="outlined"
-            type={showConfirmPassword ? "text" : "password"}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle confirm password visibility"
-                    onClick={handleClickShowConfirmPassword}
-                    edge="end"
-                  >
-                    {showConfirmPassword ? <Visibility /> : <VisibilityOff />}
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
-            error={errors.confirmPassWord}
-            helperText={errors.confirmPassWord?.message}
+        {/* Confirm Password */}
+        <div className="mb-4">
+          <Controller
+            name="confirmPassWord"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                fullWidth
+                label="Confirm Password"
+                variant="outlined"
+                type={showConfirmPassword ? "text" : "password"}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={handleClickShowConfirmPassword}>
+                        {showConfirmPassword ? (
+                          <Visibility />
+                        ) : (
+                          <VisibilityOff />
+                        )}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+                error={!!errors.confirmPassWord}
+                helperText={errors.confirmPassWord?.message}
+                className="border rounded-md"
+              />
+            )}
           />
         </div>
+
         <Button
           type="submit"
           fullWidth
           variant="contained"
           color="primary"
-          className="bg-blue-500 hover:bg-blue-600"
+          className="bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md py-2"
         >
           UPDATE
         </Button>

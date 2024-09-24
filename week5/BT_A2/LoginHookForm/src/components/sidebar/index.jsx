@@ -1,5 +1,8 @@
+import { Settings } from "@mui/icons-material";
 import { NavLink } from "react-router-dom";
-
+import PermIdentityIcon from "@mui/icons-material/PermIdentity";
+import FolderIcon from "@mui/icons-material/Folder";
+import AddIcCallIcon from "@mui/icons-material/AddIcCall";
 const Sidebar = () => {
   return (
     <div className="w-64 h-screen bg-white shadow-xl p-4">
@@ -13,7 +16,7 @@ const Sidebar = () => {
                 : "flex items-center p-2 text-gray-700 hover:bg-gray-100 rounded-lg"
             }
           >
-            <i className="fas fa-home mr-3"></i> Dashboard
+            <FolderIcon className="mr-3"></FolderIcon> Dashboard
           </NavLink>
         </li>
         <li>
@@ -25,19 +28,33 @@ const Sidebar = () => {
                 : "flex items-center p-2 text-gray-700 hover:bg-gray-100 rounded-lg"
             }
           >
-            <i className="fas fa-user mr-3"></i>Personal Information
+            <PermIdentityIcon className="mr-3"></PermIdentityIcon>Personal
+            Information
           </NavLink>
         </li>
+
         <li>
           <NavLink
-            to="/form"
+            to="/addphone"
             className={({ isActive }) =>
               isActive
                 ? "flex items-center p-2 text-blue-600 bg-blue-100 rounded-lg"
                 : "flex items-center p-2 text-gray-700 hover:bg-gray-100 rounded-lg"
             }
           >
-            <i className="fas fa-edit mr-3"></i> Form
+            <AddIcCallIcon className="mr-3"></AddIcCallIcon>Add form
+          </NavLink>
+        </li>
+        <li>
+          <NavLink
+            to="/setting"
+            className={({ isActive }) =>
+              isActive
+                ? "flex items-center p-2 text-blue-600 bg-blue-100 rounded-lg"
+                : "flex items-center p-2 text-gray-700 hover:bg-gray-100 rounded-lg"
+            }
+          >
+            <Settings className="mr-3"></Settings> Setting
           </NavLink>
         </li>
       </ul>

@@ -1,6 +1,15 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
-const Header = ({ handleLogout }) => {
+const Header = () => {
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
+
   return (
     <div>
       <header className="bg-teal-400">

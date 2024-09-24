@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useUser } from "../context/User";
+import { useAuth } from "../context/AuthContext";
 import { Button, IconButton, InputAdornment, TextField } from "@mui/material";
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
@@ -15,7 +15,7 @@ const schema = yup
   .required();
 const LoginPage = () => {
   const navigate = useNavigate();
-  const { userData } = useUser();
+  const { userData } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const {
     register,
