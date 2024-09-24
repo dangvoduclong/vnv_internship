@@ -87,6 +87,7 @@ function SignUp() {
   const handleReset = () => {
     reset();
   };
+  console.log(selectedCountry);
 
   return (
     <div className="flex justify-center items-center  bg-gray-100">

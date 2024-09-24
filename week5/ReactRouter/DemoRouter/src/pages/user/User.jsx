@@ -1,15 +1,21 @@
-import { useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { userData } from "../../assets/data";
 const UserTest = () => {
   const { id } = useParams();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const handleGoBack = () => {
+    navigate(-1);
+  };
+
   const user = userData.find((user) => user.id === parseInt(id));
 
   if (!user) {
     return <div>User not found!</div>;
   }
   return (
-    <>
-      <div className="flex flex-col items-center max-w-xs p-6 shadow-md rounded-xl dark:bg-gray-50 dark:text-gray-800">
+    <div className="flex justify-center items-center h-screen bg-gray-200 dark:bg-gray-900">
+      <div className="flex flex-col items-center max-w-xs p-6 shadow-md rounded-xl bg-red-100 dark:text-gray-800">
         <img
           src="https://avatarfiles.alphacoders.com/325/thumb-1920-325934.png"
           alt="Leroy Jenkins"
@@ -56,7 +62,35 @@ const UserTest = () => {
           </a>
         </div>
       </div>
-    </>
+
+      <div className="p-6 bg-gray-100 rounded-lg shadow-md">
+        <h1 className="text-2xl font-bold mb-4">User Route</h1>
+        <p className="text-gray-700 mb-2">
+          Current Location:{" "}
+          <span className="font-semibold">{location.pathname}</span>
+        </p>
+        <p className="text-gray-700 mb-2">
+          Current Search:{" "}
+          <span className="font-semibold">{location.search}</span>
+        </p>
+        <p className="text-gray-700 mb-2">
+          Current Hash: <span className="font-semibold">{location.hash}</span>
+        </p>
+        <p className="text-gray-700 mb-2">
+          Current User:{" "}
+          <span className="font-semibold">{JSON.stringify(user)}</span>
+        </p>
+        <p className="text-gray-700 mb-2">
+          Current Location:{" "}
+          <span className="font-semibold">{JSON.stringify(location)}</span>
+        </p>
+        <p className="text-gray-700">
+          Current History:{" "}
+          <span className="font-semibold">{JSON.stringify(history)}</span>
+        </p>
+      </div>
+      <button onClick={handleGoBack}>Go Back</button>
+    </div>
   );
 };
 
