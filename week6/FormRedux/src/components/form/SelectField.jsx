@@ -1,7 +1,11 @@
 import { Select, FormHelperText, FormControl, InputLabel } from "@mui/material";
-import { Controller } from "react-hook-form";
+import { Controller, useFormContext } from "react-hook-form";
 
-const SelectField = ({ name, control, errors, label, children, ...props }) => {
+const SelectField = ({ name, label, children, ...props }) => {
+  const {
+    control,
+    formState: { errors },
+  } = useFormContext();
   return (
     <FormControl fullWidth error={!!errors[name]}>
       <InputLabel>{label}</InputLabel>

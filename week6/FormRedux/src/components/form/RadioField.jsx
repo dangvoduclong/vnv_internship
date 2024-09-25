@@ -6,9 +6,13 @@ import {
   FormLabel,
   FormHelperText,
 } from "@mui/material";
-import { Controller } from "react-hook-form";
+import { Controller, useFormContext } from "react-hook-form";
 
-const RadioField = ({ name, control, errors, label, options }) => {
+const RadioField = ({ name, label, options }) => {
+  const {
+    control,
+    formState: { errors },
+  } = useFormContext();
   return (
     <FormControl component="fieldset" error={!!errors[name]}>
       <FormLabel>{label}</FormLabel>

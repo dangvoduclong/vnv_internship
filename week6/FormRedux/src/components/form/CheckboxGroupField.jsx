@@ -1,5 +1,4 @@
-import React from "react";
-import { Controller } from "react-hook-form";
+import { Controller, useFormContext } from "react-hook-form";
 import {
   FormControl,
   FormLabel,
@@ -9,7 +8,11 @@ import {
   FormHelperText,
 } from "@mui/material";
 
-const CheckboxGroupField = ({ control, errors, name, options }) => {
+const CheckboxGroupField = ({ name, options }) => {
+  const {
+    control,
+    formState: { errors },
+  } = useFormContext();
   return (
     <FormControl component="fieldset" error={!!errors[name]}>
       <FormLabel component="legend">Role</FormLabel>

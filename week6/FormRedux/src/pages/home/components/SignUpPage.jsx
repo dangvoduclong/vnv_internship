@@ -1,7 +1,4 @@
-import { yupResolver } from "@hookform/resolvers/yup";
-import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import * as yup from "yup";
 import InputTextField from "../../../components/form/InputTextField";
 import { MenuItem } from "@mui/material";
 import SelectField from "../../../components/form/SelectField";
@@ -10,44 +7,12 @@ import CheckboxGroupField from "../../../components/form/CheckboxGroupField";
 import dataCity from "../../../data/dataCity";
 import usePassVisibility from "../../../hooks/usePassVisibility";
 import ButtonField from "../../../components/form/ButtonField";
-
-const schema = yup
-  .object({
-    firstName: yup.string().required(),
-    lastName: yup.string().required(),
-    hobby: yup.string().required(),
-    otherHobby: yup.string().when("hobby", {
-      is: "other",
-      then: () => yup.string().required("Please specify your hobby."),
-      otherwise: () => yup.string().nullable(),
-    }),
-    gender: yup.string().required(),
-    roles: yup.array().of(yup.string()).min(1, "At least one role is required"),
-    country: yup.string().required(),
-    city: yup.string().when("country", {
-      is: (country) => country && country.length > 0,
-      then: () =>
-        yup.string().required("City is required when a country is selected."),
-      otherwise: () => yup.string().nullable(),
-    }),
-    email: yup.string().email("Invalid email format").required(),
-    phoneNumber: yup
-      .string()
-      .matches(/^[0-9]{10,13}$/, "Phone number must be 10 to 13 digits")
-      .required(),
-    passWord: yup
-      .string()
-      .min(5, "Password must be at least 5 characters")
-      .required(),
-    confirmPassWord: yup
-      .string()
-      .oneOf([yup.ref("passWord"), null], "Passwords must match")
-      .required(),
-  })
-  .required();
+import { useFormContext } from "react-hook-form";
 
 const SignUpPage = () => {
   const navigate = useNavigate();
+
+  const { handleSubmit, reset, watch } = useFormContext();
 
   const {
     showPassword,
@@ -55,30 +20,6 @@ const SignUpPage = () => {
     handleClickShowPassword,
     handleClickShowConfirmPassword,
   } = usePassVisibility();
-
-  const {
-    handleSubmit,
-    formState: { errors },
-    reset,
-    watch,
-    control,
-  } = useForm({
-    resolver: yupResolver(schema),
-    defaultValues: {
-      firstName: "",
-      lastName: "",
-      hobby: "",
-      otherHobby: "",
-      country: "",
-      roles: [],
-      city: "",
-      gender: "",
-      email: "",
-      phoneNumber: "",
-      passWord: "",
-      confirmPassWord: "",
-    },
-  });
 
   const selectedCountry = watch("country");
   const cities = selectedCountry
@@ -89,6 +30,7 @@ const SignUpPage = () => {
 
   const onSubmit = (data) => {
     console.log(data);
+    localStorage.setItem("formData", JSON.stringify(data));
     navigate("/login");
   };
 
@@ -121,53 +63,27 @@ const SignUpPage = () => {
             >
               {/* First Name */}
               <div>
-                <InputTextField
-                  name="firstName"
-                  label="First Name"
-                  control={control}
-                  errors={errors}
-                />
+                <InputTextField name="firstName" label="First Name" />
               </div>
 
               {/* Last Name */}
               <div>
-                <InputTextField
-                  name="lastName"
-                  label="Last Name"
-                  control={control}
-                  errors={errors}
-                />
+                <InputTextField name="lastName" label="Last Name" />
               </div>
 
               {/* Phone Number */}
               <div>
-                <InputTextField
-                  name="phoneNumber"
-                  label="Phone Number"
-                  control={control}
-                  errors={errors}
-                />
+                <InputTextField name="phoneNumber" label="Phone Number" />
               </div>
 
               {/* Email */}
               <div>
-                <InputTextField
-                  name="email"
-                  label="Email"
-                  type="text"
-                  control={control}
-                  errors={errors}
-                />
+                <InputTextField name="email" label="Email" type="text" />
               </div>
 
               {/* Hobby */}
               <div>
-                <SelectField
-                  name="hobby"
-                  label="Hobby"
-                  control={control}
-                  errors={errors}
-                >
+                <SelectField name="hobby" label="Hobby">
                   <MenuItem value="reading">Reading</MenuItem>
                   <MenuItem value="music">Music</MenuItem>
                   <MenuItem value="sports">Sports</MenuItem>
@@ -178,8 +94,6 @@ const SignUpPage = () => {
                   <InputTextField
                     name="otherHobby"
                     label="Please specify your hobby"
-                    control={control}
-                    errors={errors}
                   />
                 )}
               </div>
@@ -187,12 +101,7 @@ const SignUpPage = () => {
               {/* Country */}
               <div>
                 <div>
-                  <SelectField
-                    name="country"
-                    label="Country"
-                    control={control}
-                    errors={errors}
-                  >
+                  <SelectField name="country" label="Country">
                     <MenuItem disabled value="">
                       <em>Select a country</em>
                     </MenuItem>
@@ -209,8 +118,6 @@ const SignUpPage = () => {
                   <SelectField
                     name="city"
                     label="City"
-                    control={control}
-                    errors={errors}
                     disabled={!selectedCountry}
                   >
                     <MenuItem disabled value="">
@@ -230,8 +137,6 @@ const SignUpPage = () => {
                 <CheckboxGroupField
                   name="roles"
                   label="Role"
-                  control={control}
-                  errors={errors}
                   options={[
                     { value: "admin", label: "Admin" },
                     { value: "user", label: "User" },
@@ -245,8 +150,6 @@ const SignUpPage = () => {
                 <RadioField
                   name="gender"
                   label="Gender"
-                  control={control}
-                  errors={errors}
                   options={[
                     { value: "male", label: "Male" },
                     { value: "female", label: "Female" },
@@ -262,8 +165,6 @@ const SignUpPage = () => {
                   type="password"
                   showPasswordToggle={showPassword}
                   onToggle={handleClickShowPassword}
-                  control={control}
-                  errors={errors}
                 />
               </div>
 
@@ -275,8 +176,6 @@ const SignUpPage = () => {
                   type="password"
                   showPasswordToggle={showConfirmPassword}
                   onToggle={handleClickShowConfirmPassword}
-                  control={control}
-                  errors={errors}
                 />
               </div>
 

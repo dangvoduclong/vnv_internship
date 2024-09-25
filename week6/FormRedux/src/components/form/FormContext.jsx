@@ -1,9 +1,6 @@
-import React, { createContext } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-
-const FormContext = createContext();
 
 const schema = yup.object().shape({
   firstName: yup.string().required("First Name is required"),
@@ -11,14 +8,15 @@ const schema = yup.object().shape({
   hobby: yup.string().required("Hobby is required"),
   otherHobby: yup.string().when("hobby", {
     is: "other",
-    then: yup.string().required("Please specify your hobby."),
+    then: () => yup.string().required("Please specify your hobby."),
   }),
   gender: yup.string().required("Gender is required"),
   roles: yup.array().of(yup.string()).min(1, "At least one role is required"),
   country: yup.string().required("Country is required"),
   city: yup.string().when("country", {
     is: (country) => !!country,
-    then: yup.string().required("City is required when a country is selected."),
+    then: () =>
+      yup.string().required("City is required when a country is selected."),
   }),
   email: yup
     .string()
@@ -38,7 +36,7 @@ const schema = yup.object().shape({
     .required("Confirm Password is required"),
 });
 
-export const FormProvider = ({ children }) => {
+export const CustomFormProvider = ({ children }) => {
   const methods = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
@@ -56,10 +54,5 @@ export const FormProvider = ({ children }) => {
       confirmPassWord: "",
     },
   });
-
-  return (
-    <FormContext.Provider value={methods}>{children}</FormContext.Provider>
-  );
+  return <FormProvider {...methods}>{children}</FormProvider>;
 };
-
-export const useFormContext = () => React.useContext(FormContext);
