@@ -1,4 +1,4 @@
-import { Suspense, lazy } from "react";
+import { lazy } from "react";
 import { Route, Routes } from "react-router-dom";
 import { AuthProvider } from "../context/AuthContext";
 import PrivateRoute from "./PrivateRoute";
@@ -14,61 +14,58 @@ const Layout = lazy(() => import("../layouts/Layout"));
 const LoginPage = lazy(() => import("../pages/Login"));
 const PerInfo = lazy(() => import("../pages/PerInfo"));
 const AddPhoneNum = lazy(() => import("../pages/AddPhoneNum"));
-const Loading = lazy(() => import("../pages/Loading"));
 
 const AppRouter = () => {
   return (
     <AuthProvider>
-      <Suspense fallback={<Loading />}>
-        <Routes>
-          <Route index element={<Home />} />
+      <Routes>
+        <Route index element={<Home />} />
+        <Route
+          path="signup"
+          element={
+            <PublicRoute>
+              <SignUp />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="login"
+          element={
+            <PublicRoute>
+              <LoginPage />
+            </PublicRoute>
+          }
+        />
+        <Route element={<Layout />}>
           <Route
-            path="signup"
+            path="dashboard"
             element={
-              <PublicRoute>
-                <SignUp />
-              </PublicRoute>
+              <PrivateRoute>
+                <DashBoard />
+              </PrivateRoute>
             }
           />
           <Route
-            path="login"
+            path="personalInformation"
             element={
-              <PublicRoute>
-                <LoginPage />
-              </PublicRoute>
+              <PrivateRoute>
+                <PerInfo />
+              </PrivateRoute>
             }
           />
-          <Route element={<Layout />}>
-            <Route
-              path="dashboard"
-              element={
-                <PrivateRoute>
-                  <DashBoard />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="personalInformation"
-              element={
-                <PrivateRoute>
-                  <PerInfo />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="addphone"
-              element={
-                <PrivateRoute>
-                  <AddPhoneNum />
-                </PrivateRoute>
-              }
-            />
-            <Route path="about" element={<AboutPage />} />
-            <Route path="contact" element={<ContactPage />} />
-            <Route path="*" element={<ErrorPage />} />
-          </Route>
-        </Routes>
-      </Suspense>
+          <Route
+            path="addphone"
+            element={
+              <PrivateRoute>
+                <AddPhoneNum />
+              </PrivateRoute>
+            }
+          />
+          <Route path="about" element={<AboutPage />} />
+          <Route path="contact" element={<ContactPage />} />
+          <Route path="*" element={<ErrorPage />} />
+        </Route>
+      </Routes>
     </AuthProvider>
   );
 };
