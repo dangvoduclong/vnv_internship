@@ -30,11 +30,34 @@ const SignUpPage = () => {
 
   const onSubmit = (data) => {
     console.log(data);
-    localStorage.setItem("formData", JSON.stringify(data));
-    navigate("/login");
+
+    let storedUserData = JSON.parse(localStorage.getItem("userData")) || {};
+    if (storedUserData[data.email]) {
+      alert("Email already exist");
+    } else {
+      storedUserData[data.email] = {
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: data.email,
+        hobby: data.hobby,
+        otherHobby: data.otherHobby,
+        country: data.country,
+        city: data.city,
+        gender: data.gender,
+        phoneNumber: data.phoneNumber,
+        roles: data.roles, // Hoặc bất kỳ thông tin nào khác bạn cần
+        passWord: data.passWord,
+        confirmPassWord: data.confirmPassWord,
+      };
+      localStorage.setItem("userData", JSON.stringify(storedUserData));
+      localStorage.setItem("isLoggedIn", "false");
+      alert("Sign up successfully");
+      navigate("/login");
+    }
   };
 
   const handleReset = () => {
+    console.log("Reset button clicked");
     reset();
   };
   return (
@@ -100,7 +123,7 @@ const SignUpPage = () => {
 
               {/* Country */}
               <div>
-                <div>
+                <div className="mb-4">
                   <SelectField name="country" label="Country">
                     <MenuItem disabled value="">
                       <em>Select a country</em>

@@ -1,9 +1,14 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Controller, useForm } from "react-hook-form";
+import { Link, useNavigate } from "react-router-dom";
 import * as yup from "yup";
-import InputTextField from "../../../components/form/InputTextField";
 import usePassVisibility from "../../../hooks/usePassVisibility";
+import ButtonField from "../../../components/form/ButtonField";
+import { IconButton, InputAdornment, TextField } from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { useAuth } from "../../../context/AuthContext";
+import { useDispatch } from "react-redux";
+import { setUserData } from "../../../redux/slice/userSlice";
 
 const schema = yup
   .object({
@@ -16,6 +21,9 @@ const schema = yup
   .required();
 
 const LoginPage = () => {
+  const dispatch = useDispatch();
+  const { login } = useAuth();
+  const navigate = useNavigate();
   const { showPassword, handleClickShowPassword } = usePassVisibility();
   const {
     handleSubmit,
@@ -28,8 +36,22 @@ const LoginPage = () => {
       passWord: "",
     },
   });
+
   const onSubmit = (data) => {
-    console.log(data);
+    const storedData = JSON.parse(localStorage.getItem("userData"));
+
+    if (data.email in storedData) {
+      if (data.passWord === storedData[data.email].passWord) {
+        alert("Login successfully");
+        login();
+        dispatch(setUserData(storedData[data.email]));
+        navigate("/dashboard");
+      } else {
+        alert("Wrong password");
+      }
+    } else {
+      alert("User not found");
+    }
   };
   return (
     <div className="bg-white dark:bg-gray-900">
@@ -64,23 +86,50 @@ const LoginPage = () => {
             <div className="mt-8">
               <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="mb-4">
-                  <InputTextField
+                  <Controller
                     name="email"
-                    label="Email"
-                    type="text"
                     control={control}
-                    errors={errors}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        fullWidth
+                        label="Email"
+                        variant="outlined"
+                        error={!!errors.email}
+                        helperText={errors.email?.message}
+                      />
+                    )}
                   />
                 </div>
                 <div>
-                  <InputTextField
+                  <Controller
                     name="passWord"
-                    label="Password"
-                    type="password"
-                    showPasswordToggle={showPassword}
-                    onToggle={handleClickShowPassword}
                     control={control}
-                    errors={errors}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        fullWidth
+                        label="Password"
+                        variant="outlined"
+                        type={showPassword ? "text" : "password"}
+                        InputProps={{
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              <IconButton onClick={handleClickShowPassword}>
+                                {showPassword ? (
+                                  <Visibility />
+                                ) : (
+                                  <VisibilityOff />
+                                )}
+                              </IconButton>
+                            </InputAdornment>
+                          ),
+                        }}
+                        error={!!errors.passWord}
+                        helperText={errors.passWord?.message}
+                        className="border rounded-md"
+                      />
+                    )}
                   />
                 </div>
                 <div className="my-2 text-right">
@@ -93,9 +142,13 @@ const LoginPage = () => {
                 </div>
 
                 <div className="mt-6">
-                  <button className="w-full px-4 py-2 tracking-wide text-white transition-colors duration-200 transform bg-blue-500 rounded-md hover:bg-blue-400 focus:outline-none focus:bg-blue-400 focus:ring focus:ring-blue-300 focus:ring-opacity-50">
-                    Sign in
-                  </button>
+                  <ButtonField
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                  >
+                    SIGN IN
+                  </ButtonField>
                 </div>
               </form>
               <p className="mt-6 text-sm text-center text-gray-400">
@@ -106,7 +159,6 @@ const LoginPage = () => {
                 >
                   Sign up
                 </Link>
-                .
               </p>
             </div>
           </div>

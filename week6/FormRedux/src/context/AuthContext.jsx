@@ -1,26 +1,30 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
 export const AuthContext = createContext();
 
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    localStorage.getItem("isLoggedIn") === "true"
+  );
 
   useEffect(() => {
-    const storeUser = localStorage.getItem("formData");
-    if (storeUser) {
-      setIsAuthenticated(true);
-    }
+    // Kiểm tra trạng thái xác thực khi ứng dụng khởi động
+    const status = localStorage.getItem("isLoggedIn") === "true";
+    setIsAuthenticated(status);
   }, []);
 
   const login = () => {
+    localStorage.setItem("isLoggedIn", "true");
     setIsAuthenticated(true);
+    console.log("Người dùng đã đăng nhập.");
   };
 
   const logout = () => {
+    localStorage.removeItem("isLoggedIn");
     setIsAuthenticated(false);
-    localStorage.removeItem("formData");
+    console.log("Người dùng đã đăng xuất.");
   };
 
   return (

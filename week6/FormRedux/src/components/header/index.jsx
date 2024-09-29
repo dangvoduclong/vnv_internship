@@ -1,6 +1,14 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 const Header = () => {
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
   return (
     <div>
       <header className="bg-teal-400">
@@ -33,7 +41,10 @@ const Header = () => {
             </div>
 
             <div className="flex text-sm">
-              <button className="p-2 ml-2 bg-teal-500 text-gray-100 font-semibold leading-none border border-teal-600 rounded hover:border-transparent hover:bg-teal-600">
+              <button
+                onClick={handleLogout}
+                className="p-2 ml-2 bg-rose-400 text-gray-100 font-semibold leading-none border border-teal-600 rounded hover:border-transparent hover:bg-rose-700"
+              >
                 Log out
               </button>
             </div>

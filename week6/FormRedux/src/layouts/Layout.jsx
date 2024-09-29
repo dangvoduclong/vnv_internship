@@ -1,9 +1,9 @@
 import { Outlet } from "react-router-dom";
-const Loading = lazy(() => import("../pages/Loading"));
 import Header from "../components/header";
 import Footer from "../components/footer";
 import Sidebar from "../components/sidebar";
-import { Suspense, lazy } from "react";
+import { Suspense } from "react";
+import Loading from "../pages/home/components/Loading";
 
 const Layout = () => {
   return (

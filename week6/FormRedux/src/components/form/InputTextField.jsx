@@ -15,6 +15,7 @@ const InputTextField = ({
     control,
     formState: { errors },
   } = useFormContext();
+
   return (
     <Controller
       name={name}
@@ -26,28 +27,20 @@ const InputTextField = ({
           fullWidth
           label={label}
           variant="outlined"
-          type={
-            showPasswordToggle ? (type === "password" ? "text" : type) : type
-          }
+          type={showPasswordToggle && type === "password" ? "text" : type}
           error={!!errors[name]}
           helperText={errors[name]?.message}
-          InputProps={
-            showPasswordToggle
-              ? {
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton onClick={onToggle}>
-                        {showPasswordToggle ? (
-                          <VisibilityOff />
-                        ) : (
-                          <Visibility />
-                        )}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }
-              : undefined
-          }
+          InputProps={{
+            ...InputProps,
+            endAdornment:
+              type === "password" ? (
+                <InputAdornment position="end">
+                  <IconButton onClick={onToggle}>
+                    {showPasswordToggle ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ) : null,
+          }}
         />
       )}
     />
