@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import InputTextField from "../../../components/form/InputTextField";
 import { MenuItem } from "@mui/material";
 import SelectField from "../../../components/form/SelectField";
@@ -8,6 +8,7 @@ import dataCity from "../../../data/dataCity";
 import usePassVisibility from "../../../hooks/usePassVisibility";
 import ButtonField from "../../../components/form/ButtonField";
 import { useFormContext } from "react-hook-form";
+import { useEffect } from "react";
 
 const SignUpPage = () => {
   const navigate = useNavigate();
@@ -28,9 +29,24 @@ const SignUpPage = () => {
 
   const selectedHobby = watch("hobby");
 
-  const onSubmit = (data) => {
-    console.log(data);
+  useEffect(() => {
+    reset({
+      firstName: "",
+      lastName: "",
+      phoneNumber: "",
+      email: "",
+      hobby: "",
+      otherHobby: "",
+      country: "",
+      city: "",
+      gender: "",
+      roles: [],
+      passWord: "",
+      confirmPassWord: "",
+    });
+  }, []);
 
+  const onSubmit = (data) => {
     let storedUserData = JSON.parse(localStorage.getItem("userData")) || {};
     if (storedUserData[data.email]) {
       alert("Email already exist");
@@ -45,7 +61,7 @@ const SignUpPage = () => {
         city: data.city,
         gender: data.gender,
         phoneNumber: data.phoneNumber,
-        roles: data.roles, // Hoặc bất kỳ thông tin nào khác bạn cần
+        roles: data.roles,
         passWord: data.passWord,
         confirmPassWord: data.confirmPassWord,
       };
@@ -58,8 +74,22 @@ const SignUpPage = () => {
 
   const handleReset = () => {
     console.log("Reset button clicked");
-    reset();
+    reset({
+      firstName: "",
+      lastName: "",
+      phoneNumber: "",
+      email: "",
+      hobby: "",
+      otherHobby: "",
+      country: "",
+      city: "",
+      gender: "",
+      roles: [],
+      passWord: "",
+      confirmPassWord: "",
+    });
   };
+
   return (
     <section className="bg-white dark:bg-gray-900">
       <div className="flex justify-center min-h-screen">
@@ -79,7 +109,6 @@ const SignUpPage = () => {
               Let’s get you all set up so you can verify your personal account
               and begin setting up your profile.
             </p>
-
             <form
               onSubmit={handleSubmit(onSubmit)}
               className="grid grid-cols-1 gap-6 mt-8 md:grid-cols-2"
@@ -215,6 +244,15 @@ const SignUpPage = () => {
                 RESET
               </ButtonField>
             </form>
+            <p className="mt-6 text-sm text-center text-gray-400">
+              Already have an account?{" "}
+              <Link
+                to={"/login"}
+                className="text-blue-500 focus:outline-none focus:underline hover:underline"
+              >
+                Log in
+              </Link>
+            </p>
           </div>
         </div>
       </div>

@@ -1,9 +1,24 @@
-import { NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { useSelector } from "react-redux";
+import { useState } from "react";
+import { Avatar, IconButton, Menu, MenuItem, Tooltip } from "@mui/material";
 
 const Header = () => {
   const { logout } = useAuth();
   const navigate = useNavigate();
+  const userData = useSelector((state) => state.user.userData);
+
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+
+  const handleOpenMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleCloseMenu = () => {
+    setAnchorEl(null);
+  };
 
   const handleLogout = () => {
     logout();
@@ -47,6 +62,39 @@ const Header = () => {
               >
                 Log out
               </button>
+            </div>
+            <div className="flex items-center ml-4">
+              <Tooltip title={userData?.email}>
+                <IconButton onClick={handleOpenMenu} sx={{ p: 0 }}>
+                  <Avatar
+                    alt={userData?.firstname}
+                    src={userData?.avatar || ""}
+                  />
+                </IconButton>
+              </Tooltip>
+              <Menu
+                anchorEl={anchorEl}
+                open={open}
+                onClose={handleCloseMenu}
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "right",
+                }}
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+              >
+                <MenuItem onClick={handleCloseMenu}>
+                  <div>
+                    <Link to="/information">
+                      <strong>{`${userData?.firstName} ${userData?.lastName}`}</strong>
+                      <p className="text-sm">{userData?.email}</p>
+                    </Link>
+                  </div>
+                </MenuItem>
+                <MenuItem onClick={handleLogout}>Logout</MenuItem>
+              </Menu>
             </div>
           </div>
         </nav>

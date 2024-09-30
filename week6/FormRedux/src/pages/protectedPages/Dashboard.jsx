@@ -28,7 +28,7 @@ const Dashboard = () => {
   };
   return (
     <section className="bg-white dark:bg-gray-900">
-      <UserForm onSubmit={onUpdate} initialData={userData} />
+      <UserForm onSubmit={onUpdate} />
     </section>
   );
 };

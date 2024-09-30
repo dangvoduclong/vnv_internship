@@ -1,6 +1,6 @@
 const Comment = () => {
   return (
-    <section className="bg-gray-50 dark:bg-gray-800">
+    <section className="bg-gray-100 dark:bg-gray-800">
       <div className="max-w-screen-xl px-4 py-8 mx-auto text-center lg:py-24 lg:px-6">
         <figure className="max-w-screen-md mx-auto">
           <svg

@@ -5,13 +5,13 @@ import ErrorPage from "../pages/home/components/ErrorPage";
 import LoginPage from "../pages/home/components/LoginPage";
 import SignUpPage from "../pages/home/components/SignUpPage";
 import Information from "../pages/protectedPages/Information";
-import { CustomFormProvider } from "../components/form/FormContext";
 import { AuthProvider } from "../context/AuthContext";
 import PublicRoute from "./PublicRoute";
 import PrivateRoute from "./PrivateRoute";
 import Dashboard from "../pages/protectedPages/Dashboard";
 import Layout from "../layouts/Layout";
 import Settings from "../pages/protectedPages/Settings";
+import { CustomFormProvider } from "../context/FormContext";
 
 const AppRouter = () => {
   return (
@@ -53,7 +53,7 @@ const AppRouter = () => {
               </PrivateRoute>
             }
           >
-            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="dashboard" element={<Dashboard />} />
             <Route path="information" element={<Information />} />
             <Route path="setting" element={<Settings />} />
             <Route path="*" element={<ErrorPage />} />

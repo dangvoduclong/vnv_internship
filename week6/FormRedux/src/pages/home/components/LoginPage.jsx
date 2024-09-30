@@ -65,11 +65,8 @@ const LoginPage = () => {
         >
           <div className="flex items-center h-full px-20 bg-gray-900 bg-opacity-40">
             <div>
-              <h2 className="text-4xl font-bold text-white">Loq</h2>
-              <p className="max-w-xl mt-3 text-gray-300">
-                The only limit to our realization of tomorrow will be our doubts
-                of today.
-              </p>
+              <h2 className="text-4xl font-bold text-white">Coca-Cola</h2>
+              <p className="max-w-xl mt-3 text-gray-300">Taste the Feeling</p>
             </div>
           </div>
         </div>

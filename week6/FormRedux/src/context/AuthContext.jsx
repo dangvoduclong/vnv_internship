@@ -10,7 +10,6 @@ export const AuthProvider = ({ children }) => {
   );
 
   useEffect(() => {
-    // Kiểm tra trạng thái xác thực khi ứng dụng khởi động
     const status = localStorage.getItem("isLoggedIn") === "true";
     setIsAuthenticated(status);
   }, []);

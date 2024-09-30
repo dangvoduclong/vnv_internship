@@ -30,8 +30,7 @@ const Sidebar = () => {
                 : "flex items-center p-2 text-gray-700 hover:bg-gray-100 rounded-lg"
             }
           >
-            <PermIdentityIcon className="mr-3"></PermIdentityIcon>Personal
-            Information
+            <PermIdentityIcon className="mr-3"></PermIdentityIcon>Profile
           </NavLink>
         </li>
 
