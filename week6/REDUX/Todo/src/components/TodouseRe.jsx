@@ -79,7 +79,7 @@ const TodoRedux = () => {
   };
   return (
     <div className="p-4">
-      <h3 className="text-xl font-bold mb-4">Todo App + Redux</h3>
+      <h3 className="text-xl font-bold mb-4">Todo App + useReducer</h3>
       <input
         ref={inputRef}
         className="border border-gray-400 p-2 rounded mb-2 mr-2"

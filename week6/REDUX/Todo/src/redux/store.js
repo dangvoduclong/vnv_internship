@@ -6,3 +6,6 @@ export const store = configureStore({
     todo: todoReducer,
   },
 });
+
+// const store = createStore(todoReducer);
+// export default store;
