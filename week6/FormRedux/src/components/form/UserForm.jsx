@@ -21,11 +21,14 @@ const UserForm = ({ onSubmit }) => {
   } = usePassVisibility();
 
   const selectedCountry = watch("country");
+  console.log(watch("country"));
+
   const cities = selectedCountry
     ? dataCity.find((item) => item.nameCountry === selectedCountry)?.cities
     : [];
 
   const selectedHobby = watch("hobby");
+  console.log(selectedHobby);
 
   const handleReset = () => {
     reset();

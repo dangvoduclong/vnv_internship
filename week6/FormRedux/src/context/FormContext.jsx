@@ -29,6 +29,7 @@ const schema = yup.object().shape({
   passWord: yup
     .string()
     .min(5, "Password must be at least 5 characters")
+    .oneOf([yup.ref("confirmPassWord"), null], "Passwords must match")
     .required("Password is required"),
   confirmPassWord: yup
     .string()
