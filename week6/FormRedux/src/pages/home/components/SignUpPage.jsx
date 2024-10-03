@@ -106,7 +106,7 @@ const SignUpPage = () => {
               Get your free account now.
             </h1>
             <p className="mt-4 text-gray-500 dark:text-gray-400">
-              Let’s get you all set up so you can verify your personal account
+              Let us get you all set up so you can verify your personal account
               and begin setting up your profile.
             </p>
             <form

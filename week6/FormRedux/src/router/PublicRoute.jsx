@@ -3,7 +3,7 @@ import { useAuth } from "../context/AuthContext";
 
 const PublicRoute = ({ children }) => {
   const { isAuthenticated } = useAuth();
-  console.log("isAuthenticated", isAuthenticated);
+
   return isAuthenticated ? <Navigate to="/dashboard" /> : children;
 };
 

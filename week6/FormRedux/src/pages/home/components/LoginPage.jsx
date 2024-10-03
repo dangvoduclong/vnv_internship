@@ -67,6 +67,12 @@ const LoginPage = () => {
             <div>
               <h2 className="text-4xl font-bold text-white">Coca-Cola</h2>
               <p className="max-w-xl mt-3 text-gray-300">Taste the Feeling</p>
+
+              <Link to={"/"}>
+                <span className="mt-6 ml-2 inline-block bg-purple-300 text-white font-semibold py-2 px-4 rounded hover:bg-purple-600 transition duration-200">
+                  Come back Home
+                </span>
+              </Link>
             </div>
           </div>
         </div>
@@ -131,6 +137,9 @@ const LoginPage = () => {
                 </div>
                 <div className="my-2 text-right">
                   <a
+                    onClick={() => {
+                      alert("I don't know how to do it");
+                    }}
                     href="#"
                     className="text-sm text-gray-400 focus:text-blue-500 hover:text-blue-500 hover:underline"
                   >

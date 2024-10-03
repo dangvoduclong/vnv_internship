@@ -19,7 +19,8 @@ const TodoRTK = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
   const todos = useSelector((state) => state.todo.todos);
-  const status = useSelector((state) => state.todo.status);
+  const loading = useSelector((state) => state.todo.loading);
+
   const error = useSelector((state) => state.todo.error);
   const dispatch = useDispatch();
 
@@ -93,8 +94,8 @@ const TodoRTK = () => {
           </div>
         </div>
 
-        {status === "loading" && <p>Loading todos...</p>}
-        {status === "failed" && <p>Error: {error}</p>}
+        {loading && <p>Loading todos...</p>}
+        {error && <p>Error: {error}</p>}
 
         <div className="mb-4">
           <input

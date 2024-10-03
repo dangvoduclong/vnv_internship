@@ -11,7 +11,7 @@ const Banner = () => {
           <p className="max-w-2xl mb-6 font-light text-gray-500 lg:mb-8 md:text-lg lg:text-xl dark:text-gray-400">
             This free and open-source landing page template was built using the
             utility classes from Tailwind CSS and based on the components from
-            the Flowbite Library and the Blocks System.
+            the Google Library and the Blocks System.
           </p>
           <div className="space-y-4 sm:flex sm:space-y-0 sm:space-x-4">
             <a
