@@ -46,7 +46,7 @@ const Sidebar = () => {
             <AddIcCallIcon className="mr-3"></AddIcCallIcon>Add form
           </NavLink>
         </li>
-        {userData.roles.includes("admin") && (
+        {userData?.roles?.includes("admin") && (
           <li>
             <NavLink
               to="/setting"

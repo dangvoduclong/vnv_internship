@@ -1,5 +1,5 @@
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
+import useAuth from "../../hooks/useAuth";
 import { useSelector } from "react-redux";
 import { useState } from "react";
 import { Avatar, IconButton, Menu, MenuItem, Tooltip } from "@mui/material";
@@ -93,7 +93,7 @@ const Header = () => {
                     </Link>
                   </div>
                 </MenuItem>
-                <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                <MenuItem onClick={handleLogout}>Log out</MenuItem>
               </Menu>
             </div>
           </div>

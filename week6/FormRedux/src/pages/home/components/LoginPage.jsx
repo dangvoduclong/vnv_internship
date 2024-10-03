@@ -6,9 +6,10 @@ import usePassVisibility from "../../../hooks/usePassVisibility";
 import ButtonField from "../../../components/form/ButtonField";
 import { IconButton, InputAdornment, TextField } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { useAuth } from "../../../context/AuthContext";
+import useAuth from "../../../hooks/useAuth";
 import { useDispatch } from "react-redux";
 import { setUserData } from "../../../redux/slice/userSlice";
+import toast from "react-hot-toast";
 
 const schema = yup
   .object({
@@ -38,19 +39,15 @@ const LoginPage = () => {
   });
 
   const onSubmit = (data) => {
-    const storedData = JSON.parse(localStorage.getItem("userData"));
-
-    if (data.email in storedData) {
-      if (data.passWord === storedData[data.email].passWord) {
-        alert("Login successfully");
-        login();
-        dispatch(setUserData(storedData[data.email]));
-        navigate("/dashboard");
-      } else {
-        alert("Wrong password");
-      }
+    const result = login(data.email, data.passWord);
+    if (result.success) {
+      dispatch(
+        setUserData(JSON.parse(localStorage.getItem("userData"))[data.email])
+      );
+      toast.success("Login successfully");
+      navigate("/dashboard");
     } else {
-      alert("User not found");
+      toast.error(result.message);
     }
   };
   return (

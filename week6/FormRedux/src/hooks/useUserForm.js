@@ -1,4 +1,4 @@
-import { useForm, FormProvider } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
@@ -24,20 +24,20 @@ const schema = yup.object().shape({
     .required("Email is required"),
   phoneNumber: yup
     .string()
-    .matches(/^[0-9]{10,13}$/, "Phone number must be 10 to 13 digits")
-    .required("Phone number is required"),
+    .required("Phone number is required")
+    .matches(/^[0-9]{10,13}$/, "Phone number must be 10 to 13 digits"),
   passWord: yup
     .string()
+    .required("Password is required")
     .min(5, "Password must be at least 5 characters")
-    .oneOf([yup.ref("confirmPassWord"), null], "Passwords must match")
-    .required("Password is required"),
+    .oneOf([yup.ref("confirmPassWord"), null], "Passwords must match"),
   confirmPassWord: yup
     .string()
-    .oneOf([yup.ref("passWord"), null], "Passwords must match")
-    .required("Confirm Password is required"),
+    .required("Confirm Password is required")
+    .oneOf([yup.ref("passWord"), null], "Passwords must match"),
 });
 
-export const CustomFormProvider = ({ children }) => {
+export const useUserForm = (initialValues = {}) => {
   const methods = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
@@ -53,7 +53,8 @@ export const CustomFormProvider = ({ children }) => {
       phoneNumber: "",
       passWord: "",
       confirmPassWord: "",
+      ...initialValues,
     },
   });
-  return <FormProvider {...methods}>{children}</FormProvider>;
+  return methods;
 };
