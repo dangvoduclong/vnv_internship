@@ -2,12 +2,12 @@ import UserForm from "../../components/form/UserForm";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setUserData } from "../../redux/slice/userSlice";
+import toast from "react-hot-toast";
 
 const Dashboard = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const userData = useSelector((state) => state.user.userData);
-  console.log(userData.city);
 
   const onUpdate = (data) => {
     const updatedUserData = { ...userData, ...data };
@@ -16,6 +16,7 @@ const Dashboard = () => {
       JSON.stringify({ ...userData, ...updatedUserData })
     );
     dispatch(setUserData(updatedUserData));
+    toast.success("Information updated successfully");
     navigate("/information");
   };
   return (

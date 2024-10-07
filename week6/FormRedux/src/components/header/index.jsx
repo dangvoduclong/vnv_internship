@@ -28,7 +28,7 @@ const Header = () => {
     <div>
       <header className="bg-teal-400">
         <nav className="flex justify-between w-full  text-white p-4">
-          <NavLink to="/">
+          <NavLink to="/dashboard">
             <span className="font-semibold text-xl tracking-tight">VINOVA</span>
           </NavLink>
           <div className="md:items-center md:w-auto flex">

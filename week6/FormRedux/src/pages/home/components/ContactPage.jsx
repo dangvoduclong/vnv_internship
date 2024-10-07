@@ -1,5 +1,12 @@
+import HeaderHome from "./HeaderHome";
+
 const ContactPage = () => {
-  return <div>ContactPage</div>;
+  return (
+    <div>
+      <HeaderHome />
+      ContactPage
+    </div>
+  );
 };
 
 export default ContactPage;

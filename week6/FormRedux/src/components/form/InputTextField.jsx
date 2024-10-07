@@ -1,7 +1,7 @@
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { IconButton, InputAdornment, TextField } from "@mui/material";
 import { Controller, useFormContext } from "react-hook-form";
-
+import { useState } from "react";
 const InputTextField = ({
   name,
   label,
@@ -9,17 +9,21 @@ const InputTextField = ({
   type,
   showPasswordToggle,
   onToggle,
+  control,
   ...props
 }) => {
+  const [showPassword, setShowPassword] = useState(false);
+  const handleClickShowPassword = () => setShowPassword((prev) => !prev);
+
   const {
-    control,
+    control: controlContext,
     formState: { errors },
   } = useFormContext();
 
   return (
     <Controller
       name={name}
-      control={control}
+      control={control || controlContext}
       render={({ field }) => (
         <TextField
           {...field}
@@ -27,7 +31,7 @@ const InputTextField = ({
           fullWidth
           label={label}
           variant="outlined"
-          type={showPasswordToggle && type === "password" ? "text" : type}
+          type={showPassword && type === "password" ? "text" : type}
           error={!!errors[name]}
           helperText={errors[name]?.message}
           InputProps={{
@@ -35,8 +39,8 @@ const InputTextField = ({
             endAdornment:
               type === "password" ? (
                 <InputAdornment position="end">
-                  <IconButton onClick={onToggle}>
-                    {showPasswordToggle ? <VisibilityOff /> : <Visibility />}
+                  <IconButton onClick={handleClickShowPassword}>
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
                   </IconButton>
                 </InputAdornment>
               ) : null,

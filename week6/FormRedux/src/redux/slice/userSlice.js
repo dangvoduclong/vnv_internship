@@ -3,7 +3,20 @@ import { createSlice } from "@reduxjs/toolkit";
 const userSlice = createSlice({
   name: "user",
   initialState: {
-    userData: null,
+    userData: {
+      firstName: "",
+      lastName: "",
+      phoneNumber: "",
+      email: "",
+      hobby: "",
+      otherHobby: "",
+      country: "",
+      city: "",
+      gender: "",
+      roles: [],
+      passWord: "",
+      confirmPassWord: "",
+    },
   },
   reducers: {
     setUserData: (state, action) => {

@@ -37,24 +37,25 @@ const schema = yup.object().shape({
     .oneOf([yup.ref("passWord"), null], "Passwords must match"),
 });
 
-export const useUserForm = (initialValues = {}) => {
+export const useUserForm = (
+  initialValues = {
+    firstName: "",
+    lastName: "",
+    hobby: "",
+    otherHobby: "",
+    country: "",
+    roles: [],
+    city: "",
+    gender: "",
+    email: "",
+    phoneNumber: "",
+    passWord: "",
+    confirmPassWord: "",
+  }
+) => {
   const methods = useForm({
     resolver: yupResolver(schema),
-    defaultValues: {
-      firstName: "",
-      lastName: "",
-      hobby: "",
-      otherHobby: "",
-      country: "",
-      roles: [],
-      city: "",
-      gender: "",
-      email: "",
-      phoneNumber: "",
-      passWord: "",
-      confirmPassWord: "",
-      ...initialValues,
-    },
+    defaultValues: { ...initialValues },
   });
   return methods;
 };

@@ -8,8 +8,7 @@ import usePassVisibility from "../../hooks/usePassVisibility";
 import ButtonField from "../form/ButtonField";
 import { useSelector } from "react-redux";
 import { useUserForm } from "../../hooks/useUserForm";
-import { FormProvider, set } from "react-hook-form";
-import { useEffect } from "react";
+import { FormProvider } from "react-hook-form";
 
 const UserForm = ({ onSubmit, initialValues }) => {
   const methods = useUserForm(initialValues);
@@ -26,19 +25,37 @@ const UserForm = ({ onSubmit, initialValues }) => {
 
   const selectedCountry = watch("country");
 
+  const handleChangeCountry = (event) => {
+    setValue("country", event.target.value);
+    setValue("city", "");
+  };
+
   const cities = selectedCountry
     ? dataCity.find((item) => item.nameCountry === selectedCountry)?.cities
     : [];
 
   const selectedHobby = watch("hobby");
 
-  useEffect(() => {
-    setValue("city", "");
+  const handleChangeHobby = (event) => {
+    setValue("hobby", event.target.value);
     setValue("otherHobby", "");
-  }, [selectedHobby, selectedCountry, setValue]);
+  };
 
   const handleReset = () => {
-    reset();
+    reset({
+      firstName: "",
+      lastName: "",
+      phoneNumber: "",
+      email: "",
+      hobby: "",
+      otherHobby: "",
+      country: "",
+      city: "",
+      gender: "",
+      roles: [],
+      passWord: "",
+      confirmPassWord: "",
+    });
   };
 
   return (
@@ -69,7 +86,7 @@ const UserForm = ({ onSubmit, initialValues }) => {
 
         {/* Hobby */}
         <div>
-          <SelectField name="hobby" label="Hobby">
+          <SelectField name="hobby" label="Hobby" onChange={handleChangeHobby}>
             <MenuItem value="reading">Reading</MenuItem>
             <MenuItem value="music">Music</MenuItem>
             <MenuItem value="sports">Sports</MenuItem>
@@ -86,9 +103,13 @@ const UserForm = ({ onSubmit, initialValues }) => {
           </div>
         </div>
 
-        {/* Country */}
+        {/* Country - City */}
         <div>
-          <SelectField name="country" label="Country">
+          <SelectField
+            name="country"
+            label="Country"
+            onChange={handleChangeCountry}
+          >
             <MenuItem disabled value="">
               <em>Select a country</em>
             </MenuItem>
@@ -99,7 +120,6 @@ const UserForm = ({ onSubmit, initialValues }) => {
             ))}
           </SelectField>
 
-          {/* City */}
           <div className="mt-4">
             <SelectField name="city" label="City" disabled={!selectedCountry}>
               <MenuItem disabled value="">
@@ -145,8 +165,8 @@ const UserForm = ({ onSubmit, initialValues }) => {
             name="passWord"
             label="Password"
             type="password"
-            showPasswordToggle={showPassword}
-            onToggle={handleClickShowPassword}
+            //showPasswordToggle={showPassword}
+            //onToggle={handleClickShowPassword}
           />
         </div>
 
@@ -156,14 +176,14 @@ const UserForm = ({ onSubmit, initialValues }) => {
             name="confirmPassWord"
             label="Confirm Password"
             type="password"
-            showPasswordToggle={showConfirmPassword}
-            onToggle={handleClickShowConfirmPassword}
+            //showPasswordToggle={showConfirmPassword}
+            //onToggle={handleClickShowConfirmPassword}
           />
         </div>
 
         {/* Button */}
         <ButtonField type="submit" variant="contained" color="primary">
-          {userData ? "UPDATE" : "SIGN UP"}
+          {userData?.email ? "UPDATE" : "SIGN UP"}
         </ButtonField>
         <ButtonField
           type="button"
