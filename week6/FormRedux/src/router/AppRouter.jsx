@@ -16,6 +16,8 @@ import PostPages from "../pages/protectedPages/PostPages";
 import DeletePages from "../pages/protectedPages/DeletePages";
 import PutPages from "../pages/protectedPages/PutPages";
 import LayoutApi from "../layouts/LayoutApi";
+import ProfileUserAPI from "../pages/protectedPages/ProfileUserApiPages";
+import LoginApiPages from "../pages/home/components/LoginApiPages";
 
 const AppRouter = () => {
   return (
@@ -46,6 +48,22 @@ const AppRouter = () => {
           </PublicRoute>
         }
       />
+      <Route
+        path="profile"
+        element={
+          <PublicRoute>
+            <ProfileUserAPI />
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="loginapi"
+        element={
+          <PublicRoute>
+            <LoginApiPages />
+          </PublicRoute>
+        }
+      />
 
       {/** private routes */}
       <Route
@@ -58,7 +76,6 @@ const AppRouter = () => {
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="information" element={<Information />} />
         <Route path="setting" element={<Settings />} />
-
         <Route path="*" element={<ErrorPage />} />
       </Route>
       <Route

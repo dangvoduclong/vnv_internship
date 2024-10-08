@@ -32,6 +32,16 @@ export function useUpdateUser(immediate = false) {
   return { userDetail, error, loading, updateUser };
 }
 
+export function usePatchUser(immediate = false) {
+  const {
+    data: userDetail,
+    error,
+    loading,
+    act: patchUser,
+  } = useApi(userApi.patchUser, immediate);
+  return { userDetail, error, loading, patchUser };
+}
+
 export function useCreateUser(immediate = false) {
   const {
     data: userDetail,

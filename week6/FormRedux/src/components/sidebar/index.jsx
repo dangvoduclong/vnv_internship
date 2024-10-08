@@ -25,7 +25,12 @@ const Sidebar = () => {
     <div className="w-64 h-screen bg-white shadow-xl p-4">
       <ul className="space-y-2">
         <NavItem to="/dashboard" icon={FolderIcon} label="Dashboard" />
-        <NavItem to="/information" icon={PermIdentityIcon} label="Profile" />
+        <NavItem
+          to="/information"
+          icon={PermIdentityIcon}
+          label="Information"
+        />
+
         <NavItem to="/addphone" icon={AddIcCallIcon} label="Add Form" />
 
         {userData?.roles?.includes("admin") &&

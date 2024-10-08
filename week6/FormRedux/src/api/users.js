@@ -9,6 +9,7 @@ export const getUserDetail = async (userId) => {
 export const createUser = async (user) => {
   try {
     const postResponse = await axiosInstance.post("/users", user);
+    console.log("Post response:", postResponse.data);
     const getAllResponse = await axiosInstance.get("/users");
     return getAllResponse.data || postResponse.data;
   } catch (error) {
