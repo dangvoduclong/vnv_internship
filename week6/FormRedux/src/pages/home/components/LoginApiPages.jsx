@@ -1,13 +1,17 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { apiFetch } from "../../../api/apiConfig";
+import { Link, useNavigate } from "react-router-dom";
+import { apiFetch } from "../../../axios/apiConfig";
 
 const LoginApiPages = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setError("");
     try {
       const data = await apiFetch("/auth/login", "POST", {
         username,
@@ -15,7 +19,12 @@ const LoginApiPages = () => {
         expiresInMins: 30,
       });
       localStorage.setItem("accessToken", data.accessToken);
+      localStorage.setItem("refreshToken", data.refreshToken);
+      console.log("Access Token:", data.accessToken);
+      console.log("Refresh Token:", data.refreshToken);
+      navigate("/profile");
     } catch (error) {
+      setError(error.message);
       console.log("Login failed: ", error.message);
     }
   };
@@ -27,6 +36,7 @@ const LoginApiPages = () => {
             <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
               Sign in to your account
             </h1>
+            {error && <p className="text-red-500">{error}</p>}
             <form className="space-y-4 md:space-y-6" onSubmit={handleLogin}>
               <div>
                 <label
@@ -41,6 +51,8 @@ const LoginApiPages = () => {
                   id="username"
                   className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   placeholder="Your username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
                   required
                 />
               </div>
@@ -52,11 +64,13 @@ const LoginApiPages = () => {
                   Password
                 </label>
                 <input
-                  type="password"
+                  type="text"
                   name="password"
                   id="password"
                   placeholder="••••••••"
                   className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   required
                 />
               </div>
