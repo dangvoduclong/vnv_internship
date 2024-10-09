@@ -21,6 +21,9 @@ const Dashboard = () => {
   };
   return (
     <section className="bg-white dark:bg-gray-900">
+      <h1 className="text-2xl font-bold mb-4 mx-auto text-center">
+        Update Form
+      </h1>
       <UserForm onSubmit={onUpdate} initialValues={userData} />
     </section>
   );

@@ -1,52 +1,76 @@
 import { useEffect, useState } from "react";
-import { apiFetch, refreshAccessToken } from "../../axios/apiConfig";
+import { apiFetch } from "../../axios/apiConfig";
 import Loading from "../home/components/Loading";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const ProfileUserApiPages = () => {
   const [userData, setUserData] = useState(null);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
+  const getTokenExpiry = (token) => {
+    if (!token) return null;
+    const payload = token.split(".")[1];
+    const decoded = JSON.parse(atob(payload));
+    return decoded.exp * 1000;
+  };
 
+  const isTokenExpired = (token) => {
+    const expiryTime = getTokenExpiry(token);
+    if (!expiryTime) return true;
+    const currentTime = Date.now();
+    return expiryTime < currentTime;
+  };
   useEffect(() => {
     const fetchUserInfo = async () => {
-      let token = localStorage.getItem("accessToken");
-      const refreshToken = localStorage.getItem("refreshToken");
+      const accessToken = localStorage.getItem("accessToken");
 
+      if (isTokenExpired(accessToken)) {
+        setError("Token đã hết hạn. Vui lòng đăng nhập lại.");
+        return navigate("/");
+      }
       try {
-        const data = await apiFetch("/auth/me", "GET", null, token);
+        const data = await apiFetch("/auth/me", "GET");
         setUserData(data);
       } catch (error) {
-        if (error.message.includes("401")) {
-          try {
-            const newTokens = await refreshAccessToken(refreshToken);
-            localStorage.setItem("accessToken", newTokens.accessToken);
-            localStorage.setItem("refreshToken", newTokens.refreshToken);
-            const data = await apiFetch(
-              "/auth/me",
-              "GET",
-              null,
-              newTokens.accessToken
-            );
-            setUserData(data);
-          } catch (refreshError) {
-            setError(refreshError.message);
-          }
-        } else {
-          setError(error.message);
-        }
+        setError(error.message);
       }
     };
 
     fetchUserInfo();
-  }, []);
+    const intervalId = setInterval(() => {
+      const accessToken = localStorage.getItem("accessToken");
+      if (isTokenExpired(accessToken)) {
+        toast.error("Token expired. Please login again.");
+        clearInterval(intervalId);
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+        navigate("/");
+      }
+    }, 1000);
+
+    return () => clearInterval(intervalId);
+  }, [navigate]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    navigate("/");
+  };
 
   return (
     <div className="h-screen p-6 bg-white rounded-lg shadow-lg border border-gray-200 overflow-auto">
+      <button
+        onClick={handleLogout}
+        className="mt-4 mb-6 text-red-600 hover:bg-red-200 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5"
+      >
+        Log out
+      </button>
       {error && (
         <p className="text-red-500 mb-4 text-center font-semibold">{error}</p>
       )}
       {userData ? (
         <div className="text-center">
-          {/* Tiêu đề và ảnh đại diện */}
           <h1 className="text-4xl font-bold mb-4 text-gray-800">{`${userData.firstName} ${userData.lastName}`}</h1>
           <img
             src={userData.image}
@@ -54,7 +78,6 @@ const ProfileUserApiPages = () => {
             className="w-32 h-32 rounded-full border-4 border-indigo-500 mb-6 mx-auto shadow-lg transition-transform duration-300 transform hover:scale-105"
           />
 
-          {/* Phần thông tin chia thành hai cột */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-4">
               {[

@@ -18,6 +18,7 @@ import PutPages from "../pages/protectedPages/PutPages";
 import LayoutApi from "../layouts/LayoutApi";
 import ProfileUserAPI from "../pages/protectedPages/ProfileUserApiPages";
 import LoginApiPages from "../pages/home/components/LoginApiPages";
+import AboutPage from "../pages/home/components/AboutPage";
 
 const AppRouter = () => {
   return (
@@ -45,6 +46,14 @@ const AppRouter = () => {
         element={
           <PublicRoute>
             <ContactPage />
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="about"
+        element={
+          <PublicRoute>
+            <AboutPage />
           </PublicRoute>
         }
       />

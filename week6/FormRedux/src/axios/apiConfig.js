@@ -10,16 +10,53 @@ const api = axios.create({
   withCredentials: true,
 });
 
-export const apiFetch = async (
-  endpoint,
-  method = "GET",
-  body = null,
-  token = null
-) => {
-  if (token) {
-    api.defaults.headers["Authorization"] = `Bearer ${token}`;
+// Interceptor cho các yêu cầu
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("accessToken");
+    if (token) {
+      config.headers["Authorization"] = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
   }
+);
 
+// Interceptor cho các phản hồi
+api.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  async (error) => {
+    const originalRequest = error.config;
+    if (error.response.status === 401) {
+      const refreshToken = localStorage.getItem("refreshToken");
+      if (!refreshToken) {
+        return Promise.reject(error);
+      }
+
+      try {
+        const { data } = await refreshAccessToken(refreshToken);
+
+        localStorage.setItem("accessToken", data.accessToken);
+        localStorage.setItem("refreshToken", data.refreshToken);
+
+        originalRequest.headers["Authorization"] = `Bearer ${data.accessToken}`;
+        console.log("Refreshed access token: ", data.accessToken);
+
+        return api(originalRequest);
+      } catch (refreshError) {
+        return Promise.reject(refreshError);
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
+// Hàm gọi API
+export const apiFetch = async (endpoint, method = "GET", body = null) => {
   try {
     const response = await api({
       url: endpoint,
@@ -37,14 +74,15 @@ export const apiFetch = async (
   }
 };
 
+// Hàm làm mới token
 export const refreshAccessToken = async (refreshToken) => {
   try {
     const response = await api.post("/auth/refresh", {
       refreshToken,
-      expiresInMins: 10,
+      expiresInMins: 5,
     });
     console.log("Refresh token response: ", response.data);
-    return response;
+    return response.data; // Trả về data
   } catch (error) {
     if (error.response) {
       throw new Error(error.response.data.message || "Failed to refresh token");
@@ -53,5 +91,4 @@ export const refreshAccessToken = async (refreshToken) => {
     }
   }
 };
-
 export default api;
