@@ -1,16 +1,17 @@
 import { useEffect, useState } from "react";
-import { listUser } from "../apiServices/ListUserService";
 
-const useFetchUsers = (limit) => {
-  const [users, setUsers] = useState([]);
+import { useDispatch } from "react-redux";
+import { fetchUsers } from "../redux/slice/userApiSlice";
+
+const useFetchUsers = () => {
+  const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await listUser(limit);
-        setUsers(response);
+        await dispatch(fetchUsers());
         setLoading(false);
       } catch (err) {
         setError(err.message);
@@ -19,10 +20,9 @@ const useFetchUsers = (limit) => {
     };
 
     fetchData();
-  }, [limit]);
+  }, []);
 
   return {
-    users,
     loading,
     error,
   };

@@ -1,4 +1,4 @@
-import * as userApi from "../api/users";
+import * as userApi from "../axios/users";
 import useApi from "./api/useApi";
 
 export function useGetUserDetail(immediate = false) {

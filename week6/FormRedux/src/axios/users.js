@@ -2,7 +2,6 @@ import axiosInstance from "../axios/axiosConfig";
 
 export const getUserDetail = async (userId) => {
   const response = await axiosInstance.get(`/users?_limit=${userId}`);
-
   return response.data;
 };
 

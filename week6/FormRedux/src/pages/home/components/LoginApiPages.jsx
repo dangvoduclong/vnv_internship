@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { apiFetch } from "../../../axios/apiConfig";
+//import { apiFetch } from "../../../api/apiConfig";
+import { getAxiosInstance } from "../../../api/testConfig";
 
 const LoginApiPages = () => {
   const [username, setUsername] = useState("");
@@ -12,17 +13,21 @@ const LoginApiPages = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
+
+    const axiosInstance = await getAxiosInstance();
     try {
-      const data = await apiFetch("/auth/login", "POST", {
+      const data = await axiosInstance.post("/auth/login", {
         username,
         password,
         expiresInMins: 1,
       });
-      localStorage.setItem("accessToken", data.accessToken);
-      localStorage.setItem("refreshToken", data.refreshToken);
+
+      localStorage.setItem("accessToken", data.data.accessToken);
+      localStorage.setItem("refreshToken", data.data.refreshToken);
+
       navigate("/profile");
     } catch (error) {
-      setError(error.message);
+      setError(error.response ? error.response.data.message : "Login failed");
       console.log("Login failed: ", error.message);
     }
   };
@@ -131,3 +136,17 @@ const LoginApiPages = () => {
 };
 
 export default LoginApiPages;
+
+// try {
+//   const data = await apiFetch("/auth/login", "POST", {
+//     username,
+//     password,
+//     expiresInMins: 1,
+//   });
+//   localStorage.setItem("accessToken", data.accessToken);
+//   localStorage.setItem("refreshToken", data.refreshToken);
+//   navigate("/profile");
+// } catch (error) {
+//   setError(error.message);
+//   console.log("Login failed: ", error.message);
+// }

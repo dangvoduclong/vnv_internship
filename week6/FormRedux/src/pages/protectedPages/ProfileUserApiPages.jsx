@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react";
-import { apiFetch } from "../../axios/apiConfig";
+import { apiFetch } from "../../api/apiConfig";
 import Loading from "../home/components/Loading";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { refreshToken } from "../../api/auth";
 
 const ProfileUserApiPages = () => {
   const [userData, setUserData] = useState(null);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+
   const getTokenExpiry = (token) => {
     if (!token) return null;
     const payload = token.split(".")[1];
@@ -23,12 +25,21 @@ const ProfileUserApiPages = () => {
   };
   useEffect(() => {
     const fetchUserInfo = async () => {
-      const accessToken = localStorage.getItem("accessToken");
+      let accessToken = localStorage.getItem("accessToken");
 
       if (isTokenExpired(accessToken)) {
-        setError("Token đã hết hạn. Vui lòng đăng nhập lại.");
-        return navigate("/");
+        accessToken = await refreshToken();
+        if (!accessToken) {
+          toast.error("Token expired. Please login again.");
+          console.log(accessToken);
+
+          //localStorage.removeItem("accessToken");
+          //localStorage.removeItem("refreshToken");
+          //return navigate("/");
+        }
+        localStorage.setItem("accessToken", accessToken);
       }
+
       try {
         const data = await apiFetch("/auth/me", "GET");
         setUserData(data);
@@ -38,18 +49,6 @@ const ProfileUserApiPages = () => {
     };
 
     fetchUserInfo();
-    const intervalId = setInterval(() => {
-      const accessToken = localStorage.getItem("accessToken");
-      if (isTokenExpired(accessToken)) {
-        toast.error("Token expired. Please login again.");
-        clearInterval(intervalId);
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
-        navigate("/");
-      }
-    }, 1000);
-
-    return () => clearInterval(intervalId);
   }, [navigate]);
 
   const handleLogout = () => {
