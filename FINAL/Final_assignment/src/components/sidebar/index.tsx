@@ -8,6 +8,7 @@ import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import { useState } from "react";
 import SubMenu from "./SubMenu";
 import MenuItem from "./MenuItem";
+import { Link } from "react-router-dom";
 
 interface SidebarProps {
   className?: string;
@@ -18,6 +19,10 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("accessToken");
   };
 
   return (
@@ -31,12 +36,12 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
           <div>
             <a
               href=""
-              className="flex items-center ps-2.5 h-16 mb-5 bg-indigo-500 rounded p-2 justify-around"
+              className="flex items-center ps-2.5 h-14 mb-5 bg-indigo-700 justify-around"
             >
               <span className="self-center font-semibold whitespace-nowrap text-white">
                 NurtureWare
               </span>
-              <MenuOutlinedIcon />
+              <MenuOutlinedIcon className="text-white" />
             </a>
           </div>
           <div className="max-h-96 overflow-y-auto bg-gray-50 dark:bg-gray-800">
@@ -44,55 +49,53 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
               <li>
                 <SubMenu
                   items={[
-                    { title: "Admin Management", link: "account/admins" },
-                    { title: "Doula Management", link: "#" },
-                    { title: "Client Management", link: "#" },
+                    { title: "Admin Management", link: "/account/admins" },
+                    { title: "Doula Management", link: "/account/doulas" },
+                    { title: "Client Management", link: "/account/client" },
                   ]}
                 />
               </li>
               <MenuItem
                 icon={<ChatBubbleOutlineIcon />}
                 title="Article"
-                link="#"
+                link="/article"
               />
               <MenuItem
                 icon={<LibraryBooksOutlinedIcon />}
                 title="PD Session"
-                link="#"
+                link="/pd-sessions"
               />
               <MenuItem
                 icon={<GridViewOutlinedIcon />}
                 title="Category"
-                link="#"
+                link="/categories"
               />
               <MenuItem
                 icon={<CardGiftcardOutlinedIcon />}
                 title="Voucher"
-                link="#"
+                link="/voucher"
               />
               <MenuItem
                 icon={<FeedOutlinedIcon />}
                 title="Help Documents"
-                link="#"
+                link="/help-documents"
               />
               <MenuItem
                 icon={<ZoomInOutlinedIcon />}
                 title="Search Settings"
-                link="#"
+                link="/search-settings"
               />
             </ul>
           </div>
         </div>
-        <div className="flex items-center justify-between p-2 bg-purple-200 dark:bg-gray-700 rounded-lg ">
+        <div className="flex items-center justify-between p-2 bg-purple-200 dark:bg-gray-700">
           <div className="flex items-center ml-3">
             <img
               src="https://icdn.24h.com.vn/upload/1-2021/images/2021-02-26/image50-1614333620-651-width500height800.jpg"
               alt="User Avatar"
-              height={30}
-              width={35}
-              className="rounded-full"
+              className="rounded-full h-10 w-10"
             />
-            <span className="ms-3 text-gray-900 dark:text-white">
+            <span className="ms-2 text-gray-900 dark:text-white">
               Super Admin
             </span>
           </div>
@@ -111,12 +114,13 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
                 >
                   Change Password
                 </a>
-                <a
-                  href="#"
+                <Link
+                  to="/"
+                  onClick={handleLogout}
                   className="block px-4 py-2 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
                 >
                   Logout
-                </a>
+                </Link>
               </div>
             )}
           </div>

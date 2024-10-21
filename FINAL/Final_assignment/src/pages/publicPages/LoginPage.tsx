@@ -7,10 +7,12 @@ import InputTextField from "../../components/form/InputTextField";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+import { login } from "../../api/auth";
 
 const schema = yup
   .object({
-    email: yup.string().required(),
+    username: yup.string().required(),
     password: yup
       .string()
       .matches(
@@ -22,7 +24,7 @@ const schema = yup
   .required();
 
 interface LoginFormValues {
-  email: string;
+  username: string;
   password: string;
 }
 
@@ -32,16 +34,22 @@ const LoginPage: React.FC = () => {
   const methods = useForm<LoginFormValues>({
     resolver: yupResolver(schema),
     defaultValues: {
-      email: "",
+      username: "",
       password: "",
     },
   });
 
   const { handleSubmit } = methods;
 
-  const onSubmit = (data: LoginFormValues) => {
-    console.log("Login data:", data);
-    navigate("/account/admins");
+  const onSubmit = async (data: LoginFormValues) => {
+    try {
+      const response = await login(data.username, data.password);
+      console.log("Login response:", response);
+      navigate("/account/admins");
+    } catch (error) {
+      console.error("Login failed", error);
+      toast.error("Login failed");
+    }
   };
 
   return (
@@ -88,7 +96,7 @@ const LoginPage: React.FC = () => {
             <form onSubmit={handleSubmit(onSubmit)} className="w-full">
               <Box marginBottom={2}>
                 <InputTextField
-                  name="email"
+                  name="username"
                   placeholder="Username or email"
                   type="text"
                   label="Username or email"

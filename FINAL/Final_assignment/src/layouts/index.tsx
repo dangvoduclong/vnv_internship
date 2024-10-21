@@ -5,9 +5,11 @@ import Sidebar from "../components/sidebar";
 
 const Layout: React.FC = () => {
   return (
-    <div className="flex flex-row">
-      <Sidebar className="w-1/5 " />
-      <div className="w-4/5 ">
+    <div className="flex h-screen w-full">
+      <div className="w-[253px] flex-none">
+        <Sidebar />
+      </div>
+      <div className="flex-grow" style={{ width: `calc(100% - 253px)` }}>
         <Suspense fallback={<Loading />}>
           <Outlet />
         </Suspense>
