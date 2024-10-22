@@ -1,137 +1,114 @@
-// src/components/DataTable.tsx
-import React, { useState } from "react";
-import { IconButton } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
+import React, { useState, useMemo, useCallback } from "react";
+import TableHeader from "./TableHeader";
+import TableRow from "./TableRow";
+import Pagination from "./Pagination";
 
-interface DataRow {
-  id: string;
-  username: string;
-  firstName: string;
-  lastName: string;
-  status: string;
-  email: string;
-  role: string;
-}
 interface DataTableProps {
-  data: DataRow[];
-  columns: { id: string; label: string }[];
+  data: Record<string, any>[];
+  columns: { id: string; label: string; sortable?: boolean }[];
   actionIcons?: {
     view?: React.ReactNode;
     edit?: React.ReactNode;
+    delete?: React.ReactNode;
   };
+  pagination?: boolean;
 }
 
 const DataTable: React.FC<DataTableProps> = ({
   data,
   columns,
   actionIcons,
+  pagination = true,
 }) => {
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rowsPerPage, setRowsPerPage] = useState(25);
+  const [sortConfig, setSortConfig] = useState<{
+    key: string;
+    direction: "asc" | "desc";
+  } | null>(null);
 
-  const handleChangePage = (event: unknown, newPage: number) => {
+  const handleSort = useCallback(
+    (columnId: string) => {
+      if (sortConfig && sortConfig.key === columnId) {
+        setSortConfig({
+          key: columnId,
+          direction: sortConfig.direction === "asc" ? "desc" : "asc",
+        });
+      } else {
+        setSortConfig({ key: columnId, direction: "asc" });
+      }
+    },
+    [sortConfig]
+  );
+
+  const sortedData = useMemo(() => {
+    if (!sortConfig) return data;
+
+    const sorted = [...data].sort((a, b) => {
+      if (a[sortConfig.key] < b[sortConfig.key]) {
+        return sortConfig.direction === "asc" ? -1 : 1;
+      }
+      if (a[sortConfig.key] > b[sortConfig.key]) {
+        return sortConfig.direction === "asc" ? 1 : -1;
+      }
+      return 0;
+    });
+    return sorted;
+  }, [data, sortConfig]);
+
+  const paginatedData = useMemo(
+    () =>
+      sortedData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
+    [sortedData, page, rowsPerPage]
+  );
+
+  const totalPages = useMemo(
+    () => Math.ceil(data.length / rowsPerPage),
+    [data.length, rowsPerPage]
+  );
+
+  const handleChangePage = useCallback((newPage: number) => {
     setPage(newPage);
-  };
+  }, []);
 
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
+  const handleChangeRowsPerPage = useCallback(
+    (event: React.ChangeEvent<HTMLSelectElement>) => {
+      setRowsPerPage(parseInt(event.target.value, 10));
+      setPage(0);
+    },
+    []
+  );
 
   return (
-    <div>
-      <div className="overflow-auto h-screen">
-        <table className="min-w-full border-collapse border border-gray-300">
-          <thead className="bg-gray-200 sticky top-0">
-            <tr>
-              {columns.map((column) => (
-                <th
-                  key={column.id}
-                  className="sticky top-0 z-20 border border-gray-300 border-b-4 px-4 py-2 min-w-60 h-[59px]"
-                >
-                  {column.label}
-                </th>
-              ))}
-              <th className="sticky right-0 z-30 top-0 border border-gray-300 border-b-4 px-4 py-2 min-w-60 h-[59px]">
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {data
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((row, index) => (
-                <tr
+    <div className="overflow-auto h-screen">
+      <div className="overflow-auto shadow-md">
+        <div className="overflow-y-auto">
+          <table className="min-w-full border-separate border-spacing-0 table-fixed">
+            <TableHeader columns={columns} onSort={handleSort} />
+            <tbody>
+              {paginatedData.map((row, index) => (
+                <TableRow
                   key={row.id}
-                  className={
-                    index % 2 === 0
-                      ? "bg-white h-[49px]"
-                      : "bg-gray-200 h-[49px]"
-                  }
-                >
-                  {columns.map((column) => (
-                    <td
-                      key={column.id}
-                      className="border border-gray-300 px-4 py-2"
-                    >
-                      {row[column.id as keyof DataRow]}
-                    </td>
-                  ))}
-                  <td className="sticky right-0 z-10 border border-gray-300 px-4 py-2">
-                    {actionIcons?.view && (
-                      <IconButton sx={{ color: "blue" }}>
-                        {actionIcons.view}
-                      </IconButton>
-                    )}
-                    {actionIcons?.edit && (
-                      <IconButton sx={{ color: "green" }}>
-                        {actionIcons.edit}
-                      </IconButton>
-                    )}
-                    <IconButton sx={{ color: "red" }}>
-                      <DeleteIcon />
-                    </IconButton>
-                  </td>
-                </tr>
+                  row={row}
+                  columns={columns}
+                  actionIcons={actionIcons}
+                  index={index}
+                />
               ))}
-          </tbody>
-        </table>
-      </div>
-      <div className="flex justify-between items-center mt-2">
-        <span>
-          Showing {page * rowsPerPage + 1} to{" "}
-          {Math.min((page + 1) * rowsPerPage, data.length)} of {data.length}{" "}
-          entries
-        </span>
-        <div>
-          <select value={rowsPerPage} onChange={handleChangeRowsPerPage}>
-            {[5, 10, 15, 20, 50].map((option) => (
-              <option key={option} value={option}>
-                {option}
-              </option>
-            ))}
-          </select>
-          <button
-            onClick={(e) => handleChangePage(e, Math.max(page - 1, 0))}
-            disabled={page === 0}
-          >
-            Previous
-          </button>
-          <button
-            onClick={(e) =>
-              handleChangePage(
-                e,
-                Math.min(page + 1, Math.ceil(data.length / rowsPerPage) - 1)
-              )
-            }
-            disabled={(page + 1) * rowsPerPage >= data.length}
-          >
-            Next
-          </button>
+            </tbody>
+          </table>
         </div>
       </div>
+      {pagination && (
+        <Pagination
+          page={page}
+          totalPages={totalPages}
+          rowsPerPage={rowsPerPage}
+          dataLength={data.length}
+          onChangePage={handleChangePage}
+          onChangeRowsPerPage={handleChangeRowsPerPage}
+        />
+      )}
     </div>
   );
 };

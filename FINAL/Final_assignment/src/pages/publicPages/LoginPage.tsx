@@ -44,6 +44,7 @@ const LoginPage: React.FC = () => {
   const onSubmit = async (data: LoginFormValues) => {
     try {
       const response = await login(data.username, data.password);
+      toast.success("Login successful");
       console.log("Login response:", response);
       navigate("/account/admins");
     } catch (error) {

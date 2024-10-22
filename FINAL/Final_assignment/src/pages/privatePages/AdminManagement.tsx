@@ -4,7 +4,8 @@ import useSearchHandler from "../../hooks/useSearchHandler";
 import DataTable from "../../components/table/DataTable";
 import Loading from "../components/Loading";
 import { fetchData } from "../../utils/axiosConfig";
-import VisibilityIcon from "@mui/icons-material/Visibility";
+import BorderColorRoundedIcon from "@mui/icons-material/BorderColorRounded";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 interface User {
   id: string;
@@ -35,12 +36,11 @@ const AdminManagement: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   const columns = [
-    { id: "username", label: "Username" },
-    { id: "firstName", label: "First Name" },
-    { id: "lastName", label: "Last Name" },
-    { id: "email", label: "Email" },
-    { id: "role", label: "Role" },
-    { id: "status", label: "Status" },
+    { id: "username", label: "Username", sortable: true },
+    { id: "firstName", label: "First Name", sortable: false },
+    { id: "lastName", label: "Last Name", sortable: true },
+    { id: "email", label: "Email", sortable: false },
+    { id: "status", label: "Status", sortable: true },
   ];
 
   const handleCreateForm = () => {
@@ -77,12 +77,28 @@ const AdminManagement: React.FC = () => {
           <Loading />
         </div>
       ) : (
-        <div className="p-4 bg-slate-50">
+        <div className="p-4 bg-slate-50 ">
           <DataTable
-            data={admins}
+            data={admins.map((admin) => ({
+              id: admin.id,
+              username: admin.username,
+              firstName: admin.firstName,
+              lastName: admin.lastName,
+              email: admin.email,
+              status: (
+                <div className="flex items-center">
+                  <span className="w-2.5 h-2.5 rounded-full bg-green-500 mr-1"></span>
+                  <span>
+                    {admin.status.charAt(0).toUpperCase() +
+                      admin.status.slice(1)}
+                  </span>
+                </div>
+              ),
+            }))}
             columns={columns}
             actionIcons={{
-              view: <VisibilityIcon />,
+              edit: <BorderColorRoundedIcon />,
+              delete: <DeleteIcon />,
             }}
           />
         </div>
