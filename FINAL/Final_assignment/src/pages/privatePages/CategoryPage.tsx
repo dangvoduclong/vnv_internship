@@ -67,21 +67,21 @@ const CategoryPage: React.FC = () => {
   };
 
   return (
-    <div>
+    <div className="flex flex-col h-screen">
       <Header
         outletName="Category"
         onSearch={handleSearch}
         onCreate={handleCreateForm}
         buttonText="Create Category"
       />
-      {error ? (
-        <div>Error loading data: {error}</div>
-      ) : loading ? (
-        <div>
-          <Loading />
-        </div>
-      ) : (
-        <div className="p-4 bg-slate-50 ">
+      <div className="flex-grow overflow-auto p-4 bg-slate-50 ">
+        {error ? (
+          <div>Error loading data: {error}</div>
+        ) : loading ? (
+          <div>
+            <Loading />
+          </div>
+        ) : (
           <DataTable
             data={categories.map((category) => ({
               name: category.name,
@@ -126,8 +126,8 @@ const CategoryPage: React.FC = () => {
             }}
             pagination={false}
           />
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };

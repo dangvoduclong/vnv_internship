@@ -12,6 +12,12 @@ interface DataTableProps {
     delete?: React.ReactNode;
   };
   pagination?: boolean;
+  page: number;
+  rowsPerPage: number;
+  totalPages: number;
+  totalCount: number;
+  onPageChange: (newPage: number) => void;
+  onRowsPerPageChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
 }
 
 const DataTable: React.FC<DataTableProps> = ({
@@ -19,9 +25,13 @@ const DataTable: React.FC<DataTableProps> = ({
   columns,
   actionIcons,
   pagination = true,
+  page,
+  rowsPerPage,
+  totalPages,
+  totalCount,
+  onPageChange,
+  onRowsPerPageChange,
 }) => {
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(25);
   const [sortConfig, setSortConfig] = useState<{
     key: string;
     direction: "asc" | "desc";
@@ -56,37 +66,14 @@ const DataTable: React.FC<DataTableProps> = ({
     return sorted;
   }, [data, sortConfig]);
 
-  const paginatedData = useMemo(
-    () =>
-      sortedData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
-    [sortedData, page, rowsPerPage]
-  );
-
-  const totalPages = useMemo(
-    () => Math.ceil(data.length / rowsPerPage),
-    [data.length, rowsPerPage]
-  );
-
-  const handleChangePage = useCallback((newPage: number) => {
-    setPage(newPage);
-  }, []);
-
-  const handleChangeRowsPerPage = useCallback(
-    (event: React.ChangeEvent<HTMLSelectElement>) => {
-      setRowsPerPage(parseInt(event.target.value, 10));
-      setPage(0);
-    },
-    []
-  );
-
   return (
-    <div className="overflow-auto h-screen">
-      <div className="overflow-auto shadow-md">
-        <div className="overflow-y-auto">
+    <div className="flex flex-col h-full">
+      <div className="flex-grow overflow-auto shadow-md">
+        <div className="overflow-x-auto">
           <table className="min-w-full border-separate border-spacing-0 table-fixed">
             <TableHeader columns={columns} onSort={handleSort} />
             <tbody>
-              {paginatedData.map((row, index) => (
+              {sortedData.map((row, index) => (
                 <TableRow
                   key={row.id}
                   row={row}
@@ -103,10 +90,11 @@ const DataTable: React.FC<DataTableProps> = ({
         <Pagination
           page={page}
           totalPages={totalPages}
+          totalCount={totalCount}
           rowsPerPage={rowsPerPage}
           dataLength={data.length}
-          onChangePage={handleChangePage}
-          onChangeRowsPerPage={handleChangeRowsPerPage}
+          onChangePage={onPageChange}
+          onChangeRowsPerPage={onRowsPerPageChange}
         />
       )}
     </div>

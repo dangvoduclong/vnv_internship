@@ -32,17 +32,20 @@ const TableRow: React.FC<TableRowProps> = ({
     className={index % 2 === 0 ? "bg-white h-[49px]" : "bg-gray-200 h-[49px]"}
   >
     {columns.map((column) => (
-      <td key={column.id} className="border border-gray-100 px-4 py-2 max-w-60">
+      <td
+        key={column.id}
+        className="z-10 break-all border border-gray-100 px-4 py-2 max-w-60"
+      >
         {row[column.id as keyof DataRow]}
       </td>
     ))}
     <td
-      className={`sticky right-0 z-10 border border-gray-300 px-4 py-2 ${
-        index % 2 === 0 ? "bg-white" : "bg-gray-300"
+      className={`sticky right-0 z-20 border border-gray-300 px-4 py-2 ${
+        index % 2 === 0 ? "bg-white" : "bg-gray-200"
       }`}
     >
       {actionIcons?.view && (
-        <IconButton sx={{ color: "blue" }}>{actionIcons.view}</IconButton>
+        <IconButton sx={{ color: "pink" }}>{actionIcons.view}</IconButton>
       )}
       {actionIcons?.edit && (
         <IconButton sx={{ color: "rosybrown" }}>{actionIcons.edit}</IconButton>

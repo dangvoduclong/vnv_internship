@@ -60,7 +60,7 @@ const LoginPage: React.FC = () => {
     >
       <Container
         component="main"
-        maxWidth="sm"
+        maxWidth="xs"
         sx={{
           height: "100vh",
           display: "flex",
@@ -83,10 +83,10 @@ const LoginPage: React.FC = () => {
           <img
             src={logo}
             alt="Logo"
-            style={{ width: "100%", maxWidth: "200px", marginBottom: "20px" }}
+            style={{ width: "100%", maxWidth: "80px", marginBottom: "20px" }}
           />
           <Typography
-            variant="h5"
+            variant="h6"
             component="h1"
             gutterBottom
             sx={{ fontWeight: "bold" }}
@@ -121,7 +121,7 @@ const LoginPage: React.FC = () => {
                   type="submit"
                   variant="contained"
                   color="secondary"
-                  sx={{ ml: 1 }}
+                  sx={{ width: "120px" }}
                 >
                   Login
                 </Button>

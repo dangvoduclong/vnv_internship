@@ -9,6 +9,7 @@ import { useState } from "react";
 import SubMenu from "./SubMenu";
 import MenuItem from "./MenuItem";
 import { Link } from "react-router-dom";
+import toast from "react-hot-toast";
 
 interface SidebarProps {
   className?: string;
@@ -23,6 +24,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
 
   const handleLogout = () => {
     localStorage.removeItem("accessToken");
+    toast.success("Logout successful");
   };
 
   return (

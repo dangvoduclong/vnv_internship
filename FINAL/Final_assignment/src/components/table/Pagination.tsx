@@ -6,6 +6,7 @@ import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 interface PaginationProps {
   page: number;
   totalPages: number;
+  totalCount: number;
   rowsPerPage: number;
   dataLength: number;
   onChangePage: (newPage: number) => void;
@@ -15,6 +16,7 @@ interface PaginationProps {
 const Pagination: React.FC<PaginationProps> = ({
   page,
   totalPages,
+  totalCount,
   rowsPerPage,
   dataLength,
   onChangePage,
@@ -23,7 +25,7 @@ const Pagination: React.FC<PaginationProps> = ({
   <div className="flex items-center justify-between h-14 p-4">
     <span>
       Showing {page * rowsPerPage + 1} to{" "}
-      {Math.min((page + 1) * rowsPerPage, dataLength)} of {dataLength} entries
+      {Math.min((page + 1) * rowsPerPage, dataLength)} of {totalCount} entries
     </span>
 
     <div className="flex items-center">

@@ -73,21 +73,21 @@ const ArticlePage: React.FC = () => {
   };
 
   return (
-    <div>
+    <div className="flex flex-col h-screen">
       <Header
         outletName="Article"
         onSearch={handleSearch}
         onCreate={handleCreateForm}
         buttonText="Create Article"
       />
-      {error ? (
-        <div>Error loading data: {error}</div>
-      ) : loading ? (
-        <div>
-          <Loading />
-        </div>
-      ) : (
-        <div className="p-4 bg-slate-50 ">
+      <div className="flex-grow overflow-auto p-4 bg-slate-50 ">
+        {error ? (
+          <div>Error loading data: {error}</div>
+        ) : loading ? (
+          <div>
+            <Loading />
+          </div>
+        ) : (
           <DataTable
             data={articles.map((article) => ({
               id: article.id,
@@ -126,8 +126,8 @@ const ArticlePage: React.FC = () => {
             }}
             pagination={false}
           />
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };
