@@ -1,9 +1,8 @@
 import axios from "axios";
-
-const apiURL = "https://dev-api.nurture.vinova.sg/api/v1";
+import { API_BASE_URL } from "../constants/api-endpoints";
 
 const axiosInstance = axios.create({
-  baseURL: apiURL,
+  baseURL: API_BASE_URL,
   headers: {
     "Content-Type": "application/json",
   },
@@ -24,24 +23,11 @@ axiosInstance.interceptors.request.use(
 
 axiosInstance.interceptors.response.use(
   (response) => {
-    return response;
+    return response.data;
   },
   (error) => {
     return Promise.reject(error);
   }
 );
-
-export const fetchData = async (
-  endpoint: string,
-  params?: Record<string, unknown>
-) => {
-  try {
-    const response = await axiosInstance.get(endpoint, { params });
-    return response.data;
-  } catch (error) {
-    console.error(`Error fetching data from ${endpoint}:`, error);
-    throw error;
-  }
-};
 
 export default axiosInstance;

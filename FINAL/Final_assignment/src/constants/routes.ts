@@ -1,0 +1,14 @@
+export const ROUTES = {
+  ROOT: "/",
+  LOGIN: "login",
+  ACCOUNT: "account",
+  ADMIN: "admins",
+  DOULA: "doulas",
+  CLIENT: "client",
+  ARTICLE: "article",
+  PD_SESSION: "pd-sessions",
+  CATEGORIES: "categories",
+  VOUCHER: "voucher",
+  HELP_DOCS: "help-documents",
+  SEARCH_SETTINGS: "search-settings",
+};

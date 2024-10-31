@@ -15,11 +15,8 @@ const Header: React.FC<HeaderProps> = ({
   onCreate,
   buttonText,
 }) => {
-  const [searchTerm, setSearchTerm] = React.useState<string>("");
-
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
-    setSearchTerm(value);
     onSearch(value);
   };
 
@@ -32,7 +29,6 @@ const Header: React.FC<HeaderProps> = ({
           variant="outlined"
           size="small"
           placeholder="Search"
-          value={searchTerm}
           onChange={handleSearchChange}
           InputProps={{
             endAdornment: (

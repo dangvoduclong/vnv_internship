@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { fetchData } from "../utils/axiosConfig";
+import debounce from "lodash.debounce";
 
-// Định nghĩa interface cho ApiResponse
 interface ApiResponse<T> {
   message: string;
   data: T[];
@@ -14,13 +14,21 @@ interface ApiResponse<T> {
   };
 }
 
-const useDataFetch = <T>(
-  endpoint: string,
-  page: number,
-  rowsPerPage: number,
-  searchTerm: string,
-  transformData: (data: T[]) => any[] = (data) => data // Hàm chuyển đổi dữ liệu tùy chỉnh
-) => {
+const useDataFetch = <T>({
+  endpoint,
+  page,
+  rowsPerPage,
+  params = {},
+  searchTerm,
+  transformData = (data: T[]) => data,
+}: {
+  endpoint: string;
+  page: number;
+  rowsPerPage: number;
+  params?: Record<string, any>;
+  searchTerm?: string;
+  transformData?: (data: T[]) => any[];
+}) => {
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -29,28 +37,33 @@ const useDataFetch = <T>(
 
   const getData = async () => {
     setLoading(true);
-    try {
-      const response: ApiResponse<T> = await fetchData(endpoint, {
-        page,
-        limit: rowsPerPage,
-        search: searchTerm || undefined,
-      });
-
-      setData(transformData(response.data)); // Sử dụng hàm chuyển đổi dữ liệu
-      setTotalPages(response.metadata.totalPages);
-      setTotalCount(response.metadata.totalCount);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
-    } finally {
-      setLoading(false);
-    }
+    console.log(
+      "Fetching data:",
+      endpoint,
+      page,
+      rowsPerPage,
+      params,
+      searchTerm
+    );
   };
 
-  useEffect(() => {
+  const refetch = useCallback(() => {
     getData();
+  }, [endpoint, page, rowsPerPage, searchTerm]);
+
+  useEffect(() => {
+    const handler = debounce(() => {
+      getData();
+    }, 500);
+
+    handler();
+
+    return () => {
+      handler.cancel();
+    };
   }, [page, rowsPerPage, searchTerm]);
 
-  return { data, loading, error, totalPages, totalCount };
+  return { data, loading, error, totalPages, totalCount, refetch };
 };
 
 export default useDataFetch;

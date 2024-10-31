@@ -16,6 +16,7 @@ interface InputTextFieldProps {
   type?: string;
   label?: string;
   InputProps?: object;
+  initialValue?: string;
 }
 
 const InputTextField: React.FC<InputTextFieldProps> = ({
@@ -24,6 +25,7 @@ const InputTextField: React.FC<InputTextFieldProps> = ({
   type = "text",
   label,
   InputProps,
+  initialValue,
 }) => {
   const [showPassword, setShowPassword] = useState(false);
   const handleClickShowPassword = () => setShowPassword((prev) => !prev);
@@ -43,6 +45,7 @@ const InputTextField: React.FC<InputTextFieldProps> = ({
         <Controller
           name={name}
           control={control}
+          defaultValue={initialValue}
           render={({ field }) => (
             <TextField
               {...field}

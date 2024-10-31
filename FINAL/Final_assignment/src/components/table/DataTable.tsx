@@ -1,37 +1,28 @@
 import React, { useState, useMemo, useCallback } from "react";
 import TableHeader from "./TableHeader";
 import TableRow from "./TableRow";
-import Pagination from "./Pagination";
 
-interface DataTableProps {
-  data: Record<string, any>[];
-  columns: { id: string; label: string; sortable?: boolean }[];
+interface Column {
+  id: string;
+  label: string;
+  sortable?: boolean;
+}
+
+interface DataTableProps<T> {
+  data: T[];
+  columns: Column[];
   actionIcons?: {
     view?: React.ReactNode;
     edit?: React.ReactNode;
     delete?: React.ReactNode;
   };
-  pagination?: boolean;
-  page: number;
-  rowsPerPage: number;
-  totalPages: number;
-  totalCount: number;
-  onPageChange: (newPage: number) => void;
-  onRowsPerPageChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
 }
 
-const DataTable: React.FC<DataTableProps> = ({
-  data,
+const DataTable = <T,>({
+  data = [],
   columns,
   actionIcons,
-  pagination = true,
-  page,
-  rowsPerPage,
-  totalPages,
-  totalCount,
-  onPageChange,
-  onRowsPerPageChange,
-}) => {
+}: DataTableProps<T>) => {
   const [sortConfig, setSortConfig] = useState<{
     key: string;
     direction: "asc" | "desc";
@@ -54,11 +45,11 @@ const DataTable: React.FC<DataTableProps> = ({
   const sortedData = useMemo(() => {
     if (!sortConfig) return data;
 
-    const sorted = [...data].sort((a, b) => {
-      if (a[sortConfig.key] < b[sortConfig.key]) {
+    const sorted = [...data].sort((a: T, b: T) => {
+      if (a[sortConfig.key as keyof T] < b[sortConfig.key as keyof T]) {
         return sortConfig.direction === "asc" ? -1 : 1;
       }
-      if (a[sortConfig.key] > b[sortConfig.key]) {
+      if (a[sortConfig.key as keyof T] > b[sortConfig.key as keyof T]) {
         return sortConfig.direction === "asc" ? 1 : -1;
       }
       return 0;
@@ -69,34 +60,20 @@ const DataTable: React.FC<DataTableProps> = ({
   return (
     <div className="flex flex-col h-full">
       <div className="flex-grow overflow-auto shadow-md">
-        <div className="overflow-x-auto">
-          <table className="min-w-full border-separate border-spacing-0 table-fixed">
-            <TableHeader columns={columns} onSort={handleSort} />
-            <tbody>
-              {sortedData.map((row, index) => (
-                <TableRow
-                  key={row.id}
-                  row={row}
-                  columns={columns}
-                  actionIcons={actionIcons}
-                  index={index}
-                />
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <table className="min-w-full border-separate border-spacing-0 table-fixed">
+          <TableHeader columns={columns} onSort={handleSort} />
+          <tbody>
+            {sortedData.map((row, index) => (
+              <TableRow
+                row={row}
+                columns={columns}
+                actionIcons={actionIcons}
+                index={index}
+              />
+            ))}
+          </tbody>
+        </table>
       </div>
-      {pagination && (
-        <Pagination
-          page={page}
-          totalPages={totalPages}
-          totalCount={totalCount}
-          rowsPerPage={rowsPerPage}
-          dataLength={data.length}
-          onChangePage={onPageChange}
-          onChangeRowsPerPage={onRowsPerPageChange}
-        />
-      )}
     </div>
   );
 };

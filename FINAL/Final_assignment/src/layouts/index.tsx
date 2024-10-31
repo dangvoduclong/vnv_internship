@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { Outlet } from "react-router-dom";
-import Loading from "../pages/components/Loading";
+import Loading from "../components/common/Loading";
 import Sidebar from "../components/sidebar";
 
 const Layout: React.FC = () => {
