@@ -3,28 +3,39 @@ import { Box, Button, IconButton, Modal, Typography } from "@mui/material";
 import { useForm, FormProvider } from "react-hook-form";
 import InputTextField from "../../form/InputTextField";
 import InputSelectField from "../../form/InputSelectField";
-import InputTextAreaField from "../../form/InputTextAreaField";
 import CloseIcon from "@mui/icons-material/Close";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
 
-interface CreateFormProps {
+const validationSchema = yup.object().shape({
+  phoneNumber: yup.string().required("Content is required"),
+  status: yup.string().required("Status is required"),
+});
+
+interface CreateFormDoulaProps {
   outletName: string;
   open: boolean;
   onClose: () => void;
-  onSubmit: (data: any) => Promise<void>;
-  initialData: any;
-  type: "help" | "searchSetting";
+  onSubmit: (data: { phoneNumber: string; status: string }) => Promise<void>;
+  initialData: {
+    status: string;
+    phoneNumber: string;
+  };
 }
 
-const CreateForm: React.FC<CreateFormProps> = ({
+const CreateFormDoula: React.FC<CreateFormDoulaProps> = ({
   outletName,
   open,
   onClose,
   onSubmit,
   initialData,
-  type,
 }) => {
   const methods = useForm({
-    defaultValues: initialData || "",
+    defaultValues: initialData || {
+      phoneNumber: "",
+      status: "",
+    },
+    resolver: yupResolver(validationSchema),
   });
 
   useEffect(() => {
@@ -33,7 +44,10 @@ const CreateForm: React.FC<CreateFormProps> = ({
     }
   }, [initialData, open, methods]);
 
-  const handleSubmit = async (data: any) => {
+  const handleSubmit = async (data: {
+    phoneNumber: string;
+    status: string;
+  }) => {
     await onSubmit(data);
     onClose();
   };
@@ -66,39 +80,24 @@ const CreateForm: React.FC<CreateFormProps> = ({
         {open && (
           <FormProvider {...methods}>
             <form onSubmit={methods.handleSubmit(handleSubmit)}>
-              {type === "help" && (
-                <>
-                  <InputTextField
-                    name="title"
-                    placeholder="Title"
-                    label="Title"
-                  />
-                  <InputSelectField
-                    name="status"
-                    label="Status"
-                    options={[
-                      { value: "active", label: "Active" },
-                      { value: "inactive", label: "Inactive" },
-                    ]}
-                  />
-                  <InputTextAreaField
-                    name="content"
-                    placeholder="Enter your content here..."
-                    label="Content"
-                  />
-                </>
-              )}
-              {type === "searchSetting" && (
-                <>
-                  <InputTextField
-                    name="keyword"
-                    placeholder="Text"
-                    label="Text"
-                    initialValue={initialData?.keyword}
-                  />
-                </>
-              )}
-              <Button type="submit">{initialData ? "Update" : "Create"}</Button>
+              <>
+                <InputTextField
+                  name="phoneNumber"
+                  label="Title"
+                  initialValue={initialData?.phoneNumber}
+                />
+                <InputSelectField
+                  name="status"
+                  label="Status"
+                  placeholder="Select"
+                  options={[
+                    { value: "active", label: "Active" },
+                    { value: "inactive", label: "Inactive" },
+                  ]}
+                  initialValue={initialData?.status}
+                />
+              </>
+              <Button type="submit">"Update"</Button>
             </form>
           </FormProvider>
         )}
@@ -107,4 +106,4 @@ const CreateForm: React.FC<CreateFormProps> = ({
   );
 };
 
-export default CreateForm;
+export default CreateFormDoula;

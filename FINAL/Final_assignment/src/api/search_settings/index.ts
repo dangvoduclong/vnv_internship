@@ -1,8 +1,8 @@
 import { END_POINTS } from "../../constants/api-endpoints";
 import {
-  deleteResponseSchema,
-  postResponseSchema,
-  putResponseSchema,
+  deleteSearchSettingResponseSchema,
+  postSearchSettingResponseSchema,
+  putSearchSettingResponseSchema,
   trendingKeywordListSchema,
 } from "../../schemas/search-settings";
 import {
@@ -30,7 +30,9 @@ export const createSearchSettings = async (
 ) => {
   const response = await axiosInstance.post(END_POINTS.SETTINGS, payload);
 
-  return postResponseSchema.cast(response) as SearchSettingPostResponseProps;
+  return postSearchSettingResponseSchema.cast(
+    response
+  ) as SearchSettingPostResponseProps;
 };
 
 export const updateSearchSettings = async (
@@ -42,13 +44,15 @@ export const updateSearchSettings = async (
     payload
   );
 
-  return putResponseSchema.cast(response) as SearchSettingPutResponseProps;
+  return putSearchSettingResponseSchema.cast(
+    response
+  ) as SearchSettingPutResponseProps;
 };
 
 export const deleteSearchSettings = async (id: string) => {
   const response = await axiosInstance.delete(`${END_POINTS.SETTINGS}/${id}`);
 
-  return deleteResponseSchema.cast(
+  return deleteSearchSettingResponseSchema.cast(
     response
   ) as SearchSettingDeleteResponseProps;
 };

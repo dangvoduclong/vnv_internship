@@ -12,7 +12,7 @@ import { Controller, useFormContext } from "react-hook-form";
 
 interface InputTextFieldProps {
   name: string;
-  placeholder: string;
+  placeholder?: string;
   type?: string;
   label?: string;
   InputProps?: object;
@@ -62,6 +62,10 @@ const InputTextField: React.FC<InputTextFieldProps> = ({
               }
               InputProps={{
                 ...InputProps,
+                startAdornment:
+                  type === "phoneNumber" ? (
+                    <InputAdornment position="start">+84</InputAdornment>
+                  ) : null,
                 endAdornment:
                   type === "password" ? (
                     <InputAdornment position="end">
@@ -93,6 +97,14 @@ const InputTextField: React.FC<InputTextFieldProps> = ({
                   },
                 },
                 marginTop: 1.5,
+              }}
+              onInput={(e) => {
+                if (name === "code") {
+                  if (e.target instanceof HTMLInputElement) {
+                    e.target.value = e.target.value.toUpperCase();
+                    field.onChange(e);
+                  }
+                }
               }}
             />
           )}

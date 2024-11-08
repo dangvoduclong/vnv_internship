@@ -1,130 +1,243 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Header from "../../components/header";
-import useSearchHandler from "../../hooks/useSearchHandler";
 import Loading from "../../components/common/Loading";
-import DataTable from "../../components/table/DataTable";
 import BorderColorRoundedIcon from "@mui/icons-material/BorderColorRounded";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { usePagination } from "../../hooks/common/usePagination";
-import useDataFetch from "../../hooks/useDataFetch";
-import CreateForm from "../../components/modal/search-settings";
-import axiosInstance from "../../utils/axiosConfig";
+import DataTable2 from "../../components/table/DataTable2";
+import ConfirmModal from "../../components/modal/common/ConfirmModal";
+import CreateFormHelpDocument from "../../components/modal/help-documents";
+import {
+  useCreateHelpDocuments,
+  useDeleteHelpDocuments,
+  useGetListHelpDocuments,
+  useUpdateHelpDocuments,
+} from "../../hooks/help-documents/useHelpDocuments";
+import toast from "react-hot-toast";
+import useQueryParams from "../../hooks/common/useQueryParams";
 
-interface HelpDocs {
+interface RowData {
   id: string;
   title: string;
   status: string;
   createdAt: string;
+  content: string;
 }
 
+const queryDefaults = { page: 1, limit: 25, sort: "-createdAt" };
+
 const HelpPage: React.FC = () => {
-  const { handleSearch } = useSearchHandler();
-  const { page, rowsPerPage, handlePageChange, handleRowsPerPageChange } =
-    usePagination();
+  const [isOpen, setIsOpen] = useState(false);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [selectedHelpDocument, setSelectedHelpDocument] =
+    useState<RowData | null>(null);
+  const selectedHelpDocumentRef = useRef<RowData | null>(null);
 
-  const [searchTerm, setSearchTerm] = useState<string>("");
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [initialData, setInitialData] = useState<HelpDocs | null>(null);
+  const [formData, setFormData] = useState<RowData | null>(null);
+  const [row_id, setRow_id] = useState<string | null>(null);
+  const [isDeleteAction, setIsDeleteAction] = useState(false);
 
-  const transformData = (helpDocs: HelpDocs[]) =>
-    helpDocs.map((helpDoc) => ({
-      id: helpDoc.id,
-      title: helpDoc.title,
-      status: (
+  const {
+    searchQuery,
+    queryParams,
+    handleSearch,
+    handleChangePageIndex,
+    handleChangeLimit,
+    handleRequestSort,
+  } = useQueryParams(queryDefaults);
+
+  const {
+    data: { data: helpDocuments = [], metadata } = {},
+    loading,
+    error: getError,
+    act: getHelpDocument,
+  } = useGetListHelpDocuments(false, queryParams);
+
+  const { act: createHelpDocument, error: createError } =
+    useCreateHelpDocuments(false, formData ?? {});
+  const { act: updateHelpDocument, error: updateError } =
+    useUpdateHelpDocuments(row_id ?? "", false, formData ?? {});
+  const { act: deleteHelpDocument, error: deleteError } =
+    useDeleteHelpDocuments(row_id ?? "", false);
+
+  const columns = [
+    { id: "id", label: "ID", minWidth: 170, maxWidth: 170 },
+    { id: "title", label: "Title", minWidth: 170, maxWidth: 170 },
+    {
+      id: "status",
+      label: "Status",
+      minWidth: 170,
+      maxWidth: 170,
+      render: (row: RowData) => (
         <div className="flex items-center">
           <span
             className={`w-2.5 h-2.5 rounded-full mr-1 ${
-              helpDoc.status === "inactive" ? "bg-gray-500" : "bg-green-500"
+              row.status === "inactive" ? "bg-gray-500" : "bg-green-500"
             }`}
           ></span>
           <span>
-            {helpDoc.status.charAt(0).toUpperCase() + helpDoc.status.slice(1)}
+            {row.status.charAt(0).toUpperCase() + row.status.slice(1)}
           </span>
         </div>
       ),
-      createdAt: new Date(helpDoc.createdAt).toLocaleString(),
-    }));
-
-  const {
-    data: helpDocs,
-    loading,
-    error,
-    totalPages,
-    totalCount,
-  } = useDataFetch<HelpDocs>({
-    endpoint: "/admins/help-documents",
-    page,
-    rowsPerPage,
-    params: {
-      sort: "-createdAt",
     },
-    searchTerm,
-    transformData,
-  });
-
-  const columns = [
-    { id: "id", label: "ID", sortable: true },
-    { id: "title", label: "Title", sortable: true },
-    { id: "status", label: "Status", sortable: true },
-    { id: "createdAt", label: "Created Date", sortable: true },
+    {
+      id: "createdAt",
+      label: "Created Date",
+      minWidth: 170,
+      maxWidth: 170,
+      render: (row: RowData) => {
+        const date = new Date(row.createdAt);
+        const formattedDate = date.toISOString().slice(0, 10);
+        const formattedTime =
+          String(date.getUTCHours() + 7).padStart(2, "0") +
+          ":" +
+          String(date.getUTCMinutes()).padStart(2, "0");
+        return `${formattedDate} ${formattedTime}`;
+      },
+    },
   ];
 
+  useEffect(() => {
+    const paramsWithSearch = {
+      ...queryParams,
+      ...(searchQuery ? { search: searchQuery } : {}),
+    };
+    getHelpDocument(paramsWithSearch);
+  }, [searchQuery, queryParams]);
+
   const handleCreateForm = () => {
-    console.log("Creating form...");
-    setInitialData(null);
-    setIsModalOpen(true);
+    selectedHelpDocumentRef.current = null;
+    setIsOpen(true);
   };
 
-  const handleCreate = async (data: HelpDocs) => {
-    if (initialData) {
-      // Gọi PUT cho cập nhật
-      await axiosInstance.put(`/admins/help-documents/${initialData.id}`, data);
-    } else {
-      // Gọi POST cho tạo mới
-      await axiosInstance.post("/admins/help-documents", data);
-    }
-    // Gọi lại dữ liệu để cập nhật bảng
+  const handleSubmit = async (data: RowData) => {
+    setFormData(data);
+    setIsConfirmOpen(true);
   };
+
+  const handleConfirm = async () => {
+    if (isDeleteAction) {
+      await deleteHelpDocument(selectedHelpDocumentRef.current?.id ?? "");
+      if (deleteError) {
+        toast.error("Error deleting: " + deleteError.message);
+        return;
+      }
+      getHelpDocument(queryDefaults);
+      toast.success("Deleted successfully");
+    } else {
+      let isEditMode = selectedHelpDocumentRef.current;
+      if (formData) {
+        if (isEditMode) {
+          await updateHelpDocument(formData.id, formData);
+          if (updateError) {
+            toast.error("Error updating: " + updateError.message);
+            return;
+          }
+          getHelpDocument(queryDefaults);
+          isEditMode = null;
+          setFormData(null);
+          toast.success("Updated successfully!");
+        } else {
+          await createHelpDocument(formData);
+          if (createError) {
+            toast.error("Error creating: " + createError.message);
+            return;
+          }
+          getHelpDocument(queryDefaults);
+          setFormData(null);
+          toast.success("Created successfully!");
+        }
+
+        setIsConfirmOpen(false);
+        setIsOpen(false);
+        setFormData(null);
+      }
+    }
+    setIsConfirmOpen(false);
+  };
+
+  const actionIcons = [
+    {
+      icon: <BorderColorRoundedIcon />,
+      onClick: (row: RowData) => {
+        setRow_id(row.id);
+        selectedHelpDocumentRef.current = row;
+        setSelectedHelpDocument(row);
+        setIsOpen(true);
+      },
+    },
+    {
+      icon: <DeleteIcon />,
+      onClick: (row: RowData) => {
+        setRow_id(row.id);
+        selectedHelpDocumentRef.current = row;
+        setSelectedHelpDocument(row);
+        setIsDeleteAction(true);
+        setIsConfirmOpen(true);
+      },
+    },
+  ];
 
   return (
     <div className="flex flex-col h-screen">
       <Header
         outletName="Help Documents"
-        onSearch={(term) => {
-          setSearchTerm(term);
-          handleSearch(term);
-        }}
+        onSearch={handleSearch}
         onCreate={handleCreateForm}
         buttonText="Create Help-Documents"
       />
-      <CreateForm
-        outletName="Create Help Document"
-        open={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onSubmit={handleCreate}
-        initialData={initialData}
-        type="help"
+      <CreateFormHelpDocument
+        outletName={
+          selectedHelpDocument ? "Update Help Document" : "Create Help Document"
+        }
+        open={isOpen}
+        onClose={() => {
+          setIsOpen(false);
+          setSelectedHelpDocument(null);
+        }}
+        onSubmit={handleSubmit}
+        initialData={
+          selectedHelpDocument
+            ? {
+                title: selectedHelpDocument.title,
+                status: selectedHelpDocument.status,
+                content: selectedHelpDocument.content,
+              }
+            : { title: "", status: "active", content: "" }
+        }
+        isEditMode={!!selectedHelpDocument}
+      />
+      <ConfirmModal
+        message={
+          isDeleteAction
+            ? "Are you sure you want to delete this item?"
+            : "Do you want to perform this action?"
+        }
+        open={isConfirmOpen}
+        onClose={() => {
+          setIsConfirmOpen(false);
+          setIsDeleteAction(false);
+          setRow_id(null);
+          setSelectedHelpDocument(null);
+        }}
+        onConfirm={handleConfirm}
       />
       <div className="flex-grow overflow-auto p-4 bg-slate-50">
-        {error ? (
-          <div>Error loading data: {error}</div>
+        {getError ? (
+          <div>Error loading data: {getError.message}</div>
         ) : loading ? (
           <Loading />
         ) : (
-          <DataTable
-            data={helpDocs}
+          <DataTable2
+            data={helpDocuments}
             columns={columns}
-            actionIcons={{
-              edit: <BorderColorRoundedIcon />,
-              delete: <DeleteIcon />,
-            }}
-            pagination={true}
-            page={page - 1}
-            rowsPerPage={rowsPerPage}
-            totalPages={totalPages}
-            totalCount={totalCount}
-            onPageChange={handlePageChange}
-            onRowsPerPageChange={handleRowsPerPageChange}
+            actionIcons={actionIcons}
+            totalCount={metadata?.totalCount}
+            onChangePage={handleChangePageIndex}
+            onChangeLimit={handleChangeLimit}
+            rowsPerPage={Number(queryParams.limit)}
+            page={queryParams.page - 1}
+            onRequestSort={handleRequestSort}
           />
         )}
       </div>

@@ -14,79 +14,85 @@ import DataTable2 from "../../components/table/DataTable2";
 import CreateFormSearchSetting from "../../components/modal/search-settings";
 import ConfirmModal from "../../components/modal/common/ConfirmModal";
 import toast from "react-hot-toast";
+import useQueryParams from "../../hooks/common/useQueryParams";
+
+interface RowData {
+  id: string;
+  keyword: string;
+  count: number;
+  createdAt: string;
+}
+
+const queryDefaults = { page: 1, limit: 25, sort: "-createdAt" };
 
 const SearchSettingPage: React.FC = () => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [selectedSearchSetting, setSelectedSearchSetting] =
     useState<RowData | null>(null);
   const selectedSearchSettingRef = useRef<RowData | null>(null);
-
   const [formData, setFormData] = useState<RowData | null>(null);
   const [row_id, setRow_id] = useState<string | null>(null);
   const [isDeleteAction, setIsDeleteAction] = useState(false);
 
   const {
+    searchQuery,
+    queryParams,
+    handleSearch,
+    handleChangePageIndex,
+    handleChangeLimit,
+    handleRequestSort,
+  } = useQueryParams(queryDefaults);
+
+  const {
     data: { data: searchSettings = [], metadata } = {},
     loading,
-    error,
+    error: getError,
     act: getSearchSetting,
-  } = useGetListSearchSettings(true, {
-    page: 1,
-    limit: 25,
-    sort: "-createdAt",
-    search: isInitialLoad ? undefined : searchTerm,
-  });
+  } = useGetListSearchSettings(false, queryParams);
 
-  const { act: createSearchSetting } = useCreateSearchSettings(
-    false,
-    formData ?? {}
-  );
+  const { act: createSearchSetting, error: createError } =
+    useCreateSearchSettings(false, formData ?? {});
 
-  const { act: updateSearchSetting } = useUpdateSearchSettings(
-    row_id ?? "",
-    false,
-    formData ?? {}
-  );
+  const { act: updateSearchSetting, error: updateError } =
+    useUpdateSearchSettings(row_id ?? "", false, formData ?? {});
 
-  const { act: deleteSearchSetting } = useDeleteSearchSettings(
-    row_id ?? "",
-    false
-  );
+  const { act: deleteSearchSetting, error: deleteError } =
+    useDeleteSearchSettings(row_id ?? "", false);
 
   const columns = [
-    { id: "id", label: "ID", minWidth: 170 },
-    { id: "keyword", label: "Text", minWidth: 170 },
-    { id: "count", label: "Time", minWidth: 170 },
-    { id: "createdAt", label: "Created Date", minWidth: 170 },
+    { id: "id", label: "ID", minWidth: 170, maxWidth: 170 },
+    { id: "keyword", label: "Text", minWidth: 170, maxWidth: 170 },
+    { id: "count", label: "Time", minWidth: 170, maxWidth: 170 },
+    {
+      id: "createdAt",
+      label: "Created Date",
+      minWidth: 170,
+      maxWidth: 170,
+      render: (row: RowData) => {
+        const date = new Date(row.createdAt);
+        const formattedDate = date.toISOString().slice(0, 10);
+        const formattedTime =
+          String(date.getUTCHours() + 7).padStart(2, "0") +
+          ":" +
+          String(date.getUTCMinutes()).padStart(2, "0");
+        return `${formattedDate} ${formattedTime}`;
+      },
+    },
   ];
-  interface RowData {
-    id: string;
-    keyword: string;
-    count: number;
-    createdAt: string;
-  }
-
-  const handleSearch = (searchTerm: string) => {
-    setSearchTerm(searchTerm);
-    setIsInitialLoad(false);
-  };
 
   useEffect(() => {
-    if (!isInitialLoad) {
-      getSearchSetting({
-        page: 1,
-        limit: 25,
-        sort: "status",
-        search: searchTerm,
-      });
-    }
-  }, [searchTerm]);
+    const paramsWithSearch = {
+      ...queryParams,
+      ...(searchQuery ? { search: searchQuery } : {}),
+    };
+    getSearchSetting(paramsWithSearch);
+  }, [searchQuery, queryParams]);
 
   const handleCreateForm = () => {
     console.log("Creating form...");
+    console.log("selectedSearchSetting:", selectedSearchSettingRef);
+    selectedSearchSettingRef.current = null;
     setIsOpen(true);
   };
 
@@ -99,21 +105,36 @@ const SearchSettingPage: React.FC = () => {
   const handleConfirm = async () => {
     if (isDeleteAction) {
       await deleteSearchSetting(selectedSearchSettingRef.current?.id ?? "");
+      if (deleteError) {
+        toast.error("Error deleting: " + deleteError.message);
+        return;
+      }
       getSearchSetting({ page: 1, limit: 25, sort: "status" });
       toast.success("Deleted successfully");
     } else {
-      const isEditMode = selectedSearchSettingRef.current;
+      let isEditMode = selectedSearchSettingRef.current;
       console.log("isEditMode:", isEditMode);
       if (formData) {
         if (isEditMode) {
           console.log("Updating:", formData);
           await updateSearchSetting(formData.id, formData);
+          if (updateError) {
+            toast.error("Error updating: " + updateError.message);
+            return;
+          }
           getSearchSetting({ page: 1, limit: 25, sort: "status" });
+          isEditMode = null;
+          setFormData(null);
           toast.success("Updated successfully!");
         } else {
           console.log("Creating:", formData);
           await createSearchSetting(formData);
+          if (createError) {
+            toast.error("Error creating: " + createError.message);
+            return;
+          }
           getSearchSetting({ page: 1, limit: 25, sort: "status" });
+          setFormData(null);
           toast.success("Created successfully!");
         }
 
@@ -193,8 +214,8 @@ const SearchSettingPage: React.FC = () => {
       />
 
       <div className="flex-grow overflow-auto p-4 bg-slate-50">
-        {error ? (
-          <div>Error loading data: {error.message}</div>
+        {getError ? (
+          <div>Error loading data: {getError.message}</div>
         ) : loading ? (
           <Loading />
         ) : (
@@ -203,6 +224,11 @@ const SearchSettingPage: React.FC = () => {
             columns={columns}
             actionIcons={actionIcons}
             totalCount={metadata?.totalCount}
+            onChangePage={handleChangePageIndex}
+            onChangeLimit={handleChangeLimit}
+            rowsPerPage={Number(queryParams.limit)}
+            page={queryParams.page - 1}
+            onRequestSort={handleRequestSort}
           />
         )}
       </div>

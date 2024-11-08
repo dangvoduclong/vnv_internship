@@ -14,7 +14,7 @@ export const trendingKeywordListSchema = commonListResponseSchema.shape({
   data: yup.array().of(trendingKeywordSchema), // list item schema
 });
 
-export const putResponseSchema = yup.object().shape({
+export const putSearchSettingResponseSchema = yup.object().shape({
   message: yup.string(),
   data: yup
     .object()
@@ -29,12 +29,12 @@ export const putResponseSchema = yup.object().shape({
     .required(),
 });
 
-export const postResponseSchema = yup.object().shape({
+export const postSearchSettingResponseSchema = yup.object().shape({
   message: yup.string().optional(),
   data: yup.boolean().required(),
 });
 
-export const deleteResponseSchema = yup.object().shape({
+export const deleteSearchSettingResponseSchema = yup.object().shape({
   message: yup.string().optional(),
   data: yup.number().required(),
 });

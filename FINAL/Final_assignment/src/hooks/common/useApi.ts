@@ -1,8 +1,7 @@
 import { useState } from "react";
-import { ApiResponse } from "../../api/api-response";
 import useInitialize from "./useInitialize";
 
-export default function useApi<TData, TArgs extends any[]>(
+export default function useApi<TData, TArgs extends unknown[]>(
   handler: (...args: TArgs) => Promise<TData>,
   immediate: boolean = true,
   defaultArgs?: Partial<TArgs>
@@ -11,7 +10,7 @@ export default function useApi<TData, TArgs extends any[]>(
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<Error | undefined>(undefined);
 
-  const act = async (...args: TArgs): Promise<ApiResponse<TData>> => {
+  const act = async (...args: TArgs) => {
     setLoading(true);
     setError(undefined);
     const mergedArgs = (
@@ -36,7 +35,7 @@ export default function useApi<TData, TArgs extends any[]>(
     if (immediate) {
       act(...(defaultArgs as TArgs));
     }
-  }, immediate);
+  });
 
   return {
     data,

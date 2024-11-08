@@ -1,9 +1,9 @@
 import yup from "../../utils/yup";
 import { QueryParamsProps } from "./../common/QueryParamsProps";
 import {
-  deleteResponseSchema,
-  postResponseSchema,
-  putResponseSchema,
+  deleteSearchSettingResponseSchema,
+  postSearchSettingResponseSchema,
+  putSearchSettingResponseSchema,
   trendingKeywordListSchema,
 } from "../../schemas/search-settings";
 
@@ -33,13 +33,13 @@ export type SearchSettingPayloadProps = Omit<
 >;
 
 export type SearchSettingPutResponseProps = yup.InferType<
-  typeof putResponseSchema
+  typeof putSearchSettingResponseSchema
 >;
 
 export type SearchSettingPostResponseProps = yup.InferType<
-  typeof postResponseSchema
+  typeof postSearchSettingResponseSchema
 >;
 
 export type SearchSettingDeleteResponseProps = yup.InferType<
-  typeof deleteResponseSchema
+  typeof deleteSearchSettingResponseSchema
 >;

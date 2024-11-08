@@ -19,15 +19,12 @@ const AdminManagement: React.FC = () => {
     limit: 25,
   });
 
-  console.log("data", admins);
-  console.log("metadata", metadata);
-
   const columns = [
-    { id: "username", label: "Username", minWidth: 170 },
-    { id: "firstName", label: "First Name", minWidth: 170 },
-    { id: "lastName", label: "Last Name", minWidth: 170 },
-    { id: "email", label: "Email", minWidth: 170 },
-    { id: "status", label: "Status", minWidth: 170 },
+    { id: "username", label: "Username", minWidth: 170, maxWidth: 170 },
+    { id: "firstName", label: "First Name", minWidth: 170, maxWidth: 170 },
+    { id: "lastName", label: "Last Name", minWidth: 170, maxWidth: 170 },
+    { id: "email", label: "Email", minWidth: 170, maxWidth: 170 },
+    { id: "status", label: "Status", minWidth: 170, maxWidth: 170 },
   ];
 
   interface RowData {

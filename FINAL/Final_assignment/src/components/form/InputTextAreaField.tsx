@@ -12,6 +12,7 @@ interface InputTextAreaFieldProps {
   name: string;
   placeholder?: string;
   label?: string;
+  initialValue?: string;
   rows?: number;
 }
 
@@ -19,6 +20,7 @@ const InputTextAreaField: React.FC<InputTextAreaFieldProps> = ({
   name,
   placeholder,
   label,
+  initialValue,
   rows = 4,
 }) => {
   const {
@@ -37,6 +39,7 @@ const InputTextAreaField: React.FC<InputTextAreaFieldProps> = ({
         <Controller
           name={name}
           control={control}
+          defaultValue={initialValue}
           render={({ field }) => (
             <TextareaAutosize
               {...field}

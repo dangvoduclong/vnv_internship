@@ -117,7 +117,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
                   Change Password
                 </a>
                 <Link
-                  to="/"
+                  to="/login"
                   onClick={handleLogout}
                   className="block px-4 py-2 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
                 >

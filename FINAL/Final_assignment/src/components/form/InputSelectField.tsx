@@ -11,16 +11,18 @@ import {
 
 interface InputSelectFieldProps {
   name: string;
+  placeholder: string;
   label: string;
   options: { value: string; label: string }[];
-  defaultValue?: string;
+  initialValue?: string;
 }
 
 const InputSelectField: React.FC<InputSelectFieldProps> = ({
   name,
   label,
+  placeholder,
   options,
-  defaultValue = "active",
+  initialValue,
 }) => {
   const {
     control,
@@ -36,10 +38,11 @@ const InputSelectField: React.FC<InputSelectFieldProps> = ({
         <Controller
           name={name}
           control={control}
-          defaultValue={defaultValue}
+          defaultValue={initialValue}
           render={({ field }) => (
             <Select
               {...field}
+              placeholder={placeholder}
               sx={{
                 "&:hover": {
                   borderColor: "red",
@@ -48,10 +51,10 @@ const InputSelectField: React.FC<InputSelectFieldProps> = ({
                   borderColor: "green",
                 },
                 "& .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "grey", // Màu biên mặc định
+                  borderColor: "grey",
                 },
                 "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "green", // Màu biên khi focus
+                  borderColor: "green",
                 },
               }}
             >

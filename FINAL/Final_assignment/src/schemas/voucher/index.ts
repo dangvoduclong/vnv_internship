@@ -24,3 +24,58 @@ export const voucherSchema = yup.object().shape({
 export const voucherListSchema = commonListResponseSchema.shape({
   data: yup.array().of(voucherSchema),
 });
+
+export const postVoucherResponseSchema = yup.object().shape({
+  message: yup.string(),
+  data: yup
+    .object()
+    .shape({
+      id: yup.string().required(),
+      code: yup.string().required(),
+      description: yup.string().required(),
+      startDate: yup.string().required(),
+      endDate: yup.string().required(),
+      quantityUse: yup.number().required(),
+      type: yup.string().required(),
+      amount: yup.string().required(),
+      minPayAmount: yup.string().required(),
+      maxDiscountAmount: yup.string().required(),
+      status: yup.string().required(),
+      createdBy: yup.string().required(),
+      updatedAt: yup.string().required(),
+      createdAt: yup.string().required(),
+      stripeCouponId: yup.string().required().nullable(),
+      updatedBy: yup.string().required().nullable(),
+    })
+    .required(),
+});
+
+export const putVoucherResponseSchema = yup.object().shape({
+  message: yup.string(),
+});
+
+export const getVoucherByIdResponseSchema = yup.object().shape({
+  message: yup.string(),
+  data: yup
+    .object()
+    .shape({
+      id: yup.string().required(),
+      code: yup.string().required(),
+      description: yup.string().required(),
+      startDate: yup.string().required(),
+      endDate: yup.string().required(),
+      status: yup.string().required(),
+      type: yup.string().required(),
+      amount: yup.string().required(),
+      quantityUse: yup.number().required(),
+      minPayAmount: yup.string().required(),
+      maxDiscountAmount: yup.string().required(),
+      stripeCouponId: yup.string().required().nullable(),
+      createdBy: yup.string().required(),
+      updatedBy: yup.string().required().nullable(),
+      createdAt: yup.string().required(),
+      updatedAt: yup.string().required(),
+      numOfUsed: yup.string().required(),
+    })
+    .required(),
+});
