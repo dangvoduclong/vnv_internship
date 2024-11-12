@@ -71,7 +71,7 @@ const CreateFormVoucher: React.FC<CreateFormVoucherProps> = ({
       minPayAmount: "",
       quantityUse: "",
       startDate: "",
-      status: "active",
+      status: "",
       type: "",
     },
     resolver: yupResolver(validationSchema),

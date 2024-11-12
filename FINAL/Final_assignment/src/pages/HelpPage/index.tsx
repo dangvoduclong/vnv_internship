@@ -14,6 +14,7 @@ import {
 } from "../../hooks/help-documents/useHelpDocuments";
 import toast from "react-hot-toast";
 import useQueryParams from "../../hooks/common/useQueryParams";
+import { QUERY_DEFAULT } from "../../constants/queryDefault";
 
 interface RowData {
   id: string;
@@ -22,8 +23,6 @@ interface RowData {
   createdAt: string;
   content: string;
 }
-
-const queryDefaults = { page: 1, limit: 25, sort: "-createdAt" };
 
 const HelpPage: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -43,7 +42,7 @@ const HelpPage: React.FC = () => {
     handleChangePageIndex,
     handleChangeLimit,
     handleRequestSort,
-  } = useQueryParams(queryDefaults);
+  } = useQueryParams(QUERY_DEFAULT.HELP_DOC);
 
   const {
     data: { data: helpDocuments = [], metadata } = {},
@@ -122,7 +121,7 @@ const HelpPage: React.FC = () => {
         toast.error("Error deleting: " + deleteError.message);
         return;
       }
-      getHelpDocument(queryDefaults);
+      getHelpDocument(QUERY_DEFAULT.HELP_DOC);
       toast.success("Deleted successfully");
     } else {
       let isEditMode = selectedHelpDocumentRef.current;
@@ -133,7 +132,7 @@ const HelpPage: React.FC = () => {
             toast.error("Error updating: " + updateError.message);
             return;
           }
-          getHelpDocument(queryDefaults);
+          getHelpDocument(QUERY_DEFAULT.HELP_DOC);
           isEditMode = null;
           setFormData(null);
           toast.success("Updated successfully!");
@@ -143,7 +142,7 @@ const HelpPage: React.FC = () => {
             toast.error("Error creating: " + createError.message);
             return;
           }
-          getHelpDocument(queryDefaults);
+          getHelpDocument(QUERY_DEFAULT.HELP_DOC);
           setFormData(null);
           toast.success("Created successfully!");
         }

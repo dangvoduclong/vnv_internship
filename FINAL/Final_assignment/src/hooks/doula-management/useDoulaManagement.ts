@@ -1,14 +1,22 @@
 import {
   getDoulaById,
+  getDoulaPackageId,
+  getDoulaVoucherId,
   getListDoula,
+  getPackageById,
   updateDoula,
 } from "../../api/account/doula";
 import {
-  DoulaGetByIdResponseProps,
+  DoulaGetVoucherIdResponseProps,
+  DoulaGetVoucherIdParamsProps,
   DoulaParamsProps,
   DoulaPutPayloadProps,
   DoulaPutResponseProps,
   DoulaResponseProps,
+  DoulaGetByIdResponseProps,
+  DoulaPackageGetByIdParamsProps,
+  DoulaPackageGetByIdResponseProps,
+  PackageGetByIdResponseProps,
 } from "../../types/doula-management";
 import useApi from "../common/useApi";
 
@@ -20,6 +28,27 @@ export const useGetListDoulaManagement = (
     DoulaResponseProps,
     [DoulaParamsProps]
   >(getListDoula, immediate, [params]);
+
+  return { data, loading, error, act };
+};
+
+export const useGetDoulaVoucherId = (
+  immediate: boolean = false,
+  params?: DoulaGetVoucherIdParamsProps
+) => {
+  const { data, loading, error, act } = useApi<
+    DoulaGetVoucherIdResponseProps,
+    [DoulaGetVoucherIdParamsProps]
+  >(getDoulaVoucherId, immediate, [params]);
+
+  return { data, loading, error, act };
+};
+
+export const useGetDoulaById = (id: string, immediate: boolean = false) => {
+  const { data, loading, error, act } = useApi<
+    DoulaGetByIdResponseProps,
+    [string]
+  >(getDoulaById, immediate, [id]);
 
   return { data, loading, error, act };
 };
@@ -36,10 +65,23 @@ export const useUpdateDoulaManagement = (
   return { data, loading, error, act };
 };
 
-export const useGetDoulaById = (id: string, immediate: boolean = false) => {
+export const useGetDoulaPackageId = (
+  immediate: boolean = false,
+  params?: DoulaPackageGetByIdParamsProps
+) => {
   const { data, loading, error, act } = useApi<
-    DoulaGetByIdResponseProps,
+    DoulaPackageGetByIdResponseProps,
+    [DoulaPackageGetByIdParamsProps]
+  >(getDoulaPackageId, immediate, [params]);
+
+  return { data, loading, error, act };
+};
+
+export const useGetPackageById = (id: string, immediate: boolean = false) => {
+  const { data, loading, error, act } = useApi<
+    PackageGetByIdResponseProps,
     [string]
-  >(getDoulaById, immediate, [id]);
+  >(getPackageById, immediate, [id]);
+
   return { data, loading, error, act };
 };

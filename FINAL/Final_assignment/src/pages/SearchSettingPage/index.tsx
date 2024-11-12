@@ -9,7 +9,7 @@ import {
   useUpdateSearchSettings,
   useDeleteSearchSettings,
 } from "../../hooks/search-settings/useSearchSettings";
-
+import { QUERY_DEFAULT } from "../../constants/queryDefault";
 import DataTable2 from "../../components/table/DataTable2";
 import CreateFormSearchSetting from "../../components/modal/search-settings";
 import ConfirmModal from "../../components/modal/common/ConfirmModal";
@@ -22,8 +22,6 @@ interface RowData {
   count: number;
   createdAt: string;
 }
-
-const queryDefaults = { page: 1, limit: 25, sort: "-createdAt" };
 
 const SearchSettingPage: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -42,7 +40,7 @@ const SearchSettingPage: React.FC = () => {
     handleChangePageIndex,
     handleChangeLimit,
     handleRequestSort,
-  } = useQueryParams(queryDefaults);
+  } = useQueryParams(QUERY_DEFAULT.SEARCH_SETTINGS);
 
   const {
     data: { data: searchSettings = [], metadata } = {},

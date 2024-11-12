@@ -6,7 +6,6 @@ import {
   voucherListSchema,
 } from "../../schemas/voucher";
 import {
-  VoucherGetByIdParamsProps,
   VoucherGetByIdResponseProps,
   VoucherParamsProps,
   VoucherPayloadProps,

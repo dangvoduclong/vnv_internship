@@ -8,16 +8,15 @@ import DataTable2 from "../../components/table/DataTable2";
 import {
   useCreateVoucher,
   useGetListVoucher,
-  useGetVoucherById,
   useUpdateVoucher,
 } from "../../hooks/voucher/useVoucher";
 import useQueryParams from "../../hooks/common/useQueryParams";
 import CreateFormVoucher from "../../components/modal/voucher";
-
 import ConfirmModal from "../../components/modal/common/ConfirmModal";
 import toast from "react-hot-toast";
 import { RESPONSE_MESSAGE } from "../../constants/global";
 import { useNavigate } from "react-router-dom";
+import { QUERY_DEFAULT } from "../../constants/queryDefault";
 
 interface RowData {
   id: string;
@@ -34,8 +33,6 @@ interface RowData {
   numOfUsed: string;
 }
 
-const queryDefaults = { page: 1, limit: 25, sort: "status" };
-
 const VoucherPage: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [formData, setFormData] = useState<RowData | null>(null);
@@ -51,7 +48,7 @@ const VoucherPage: React.FC = () => {
     handleChangePageIndex,
     handleChangeLimit,
     handleRequestSort,
-  } = useQueryParams(queryDefaults);
+  } = useQueryParams(QUERY_DEFAULT.VOUCHER);
 
   const {
     data: { data: vouchers = [], metadata } = {},
@@ -96,8 +93,36 @@ const VoucherPage: React.FC = () => {
         </div>
       ),
     },
-    { id: "startDate", label: "Start Date", minWidth: 170, maxWidth: 170 },
-    { id: "endDate", label: "End Date", minWidth: 170, maxWidth: 170 },
+    {
+      id: "startDate",
+      label: "Start Date",
+      minWidth: 170,
+      maxWidth: 170,
+      render: (row: RowData) => {
+        const date = new Date(row.startDate);
+        const formattedDate = date.toISOString().slice(0, 10);
+        const formattedTime =
+          String(date.getUTCHours() + 7).padStart(2, "0") +
+          ":" +
+          String(date.getUTCMinutes()).padStart(2, "0");
+        return `${formattedDate} ${formattedTime}`;
+      },
+    },
+    {
+      id: "endDate",
+      label: "End Date",
+      minWidth: 170,
+      maxWidth: 170,
+      render: (row: RowData) => {
+        const date = new Date(row.endDate);
+        const formattedDate = date.toISOString().slice(0, 10);
+        const formattedTime =
+          String(date.getUTCHours() + 7).padStart(2, "0") +
+          ":" +
+          String(date.getUTCMinutes()).padStart(2, "0");
+        return `${formattedDate} ${formattedTime}`;
+      },
+    },
     {
       id: "numOfUsed",
       label: "Number of Uses",
@@ -148,7 +173,7 @@ const VoucherPage: React.FC = () => {
         toast.error("Error creating: " + createError.message);
         return;
       }
-      getVoucher(queryDefaults);
+      getVoucher(QUERY_DEFAULT.VOUCHER);
       setFormData(null);
       toast.success("Created successfully");
     }

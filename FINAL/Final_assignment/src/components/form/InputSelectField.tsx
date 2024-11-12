@@ -15,6 +15,7 @@ interface InputSelectFieldProps {
   label: string;
   options: { value: string; label: string }[];
   initialValue?: string;
+  disabled?: boolean;
 }
 
 const InputSelectField: React.FC<InputSelectFieldProps> = ({
@@ -23,6 +24,7 @@ const InputSelectField: React.FC<InputSelectFieldProps> = ({
   placeholder,
   options,
   initialValue,
+  disabled = false,
 }) => {
   const {
     control,
@@ -57,6 +59,7 @@ const InputSelectField: React.FC<InputSelectFieldProps> = ({
                   borderColor: "green",
                 },
               }}
+              disabled={disabled}
             >
               {options.map((option) => (
                 <MenuItem key={option.value} value={option.value}>

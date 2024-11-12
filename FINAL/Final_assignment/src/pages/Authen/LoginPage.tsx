@@ -9,6 +9,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { login } from "../../api/auth";
+import { useAuth } from "../../hooks/common/useAuth";
 
 const schema = yup
   .object({
@@ -29,6 +30,7 @@ interface LoginFormValues {
 }
 
 const LoginPage: React.FC = () => {
+  const { setUser } = useAuth();
   const navigate = useNavigate();
 
   const methods = useForm<LoginFormValues>({
@@ -46,6 +48,8 @@ const LoginPage: React.FC = () => {
       const response = await login(data.username, data.password);
       toast.success("Login successful");
       console.log("Login response:", response);
+      localStorage.setItem("user", JSON.stringify(response.admin));
+      setUser(response.admin);
       navigate("/account/admins");
     } catch (error) {
       console.error("Login failed", error);

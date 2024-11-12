@@ -5,7 +5,6 @@ import {
   updateVoucher,
 } from "../../api/voucher";
 import {
-  VoucherGetByIdParamsProps,
   VoucherGetByIdResponseProps,
   VoucherParamsProps,
   VoucherPayloadProps,

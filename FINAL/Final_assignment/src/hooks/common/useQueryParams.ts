@@ -74,7 +74,7 @@ const useQueryParams = (queryDefaults: QueryParamsProps) => {
           page: QUERY_DEFAULT.page,
         }),
       });
-    }, 500)
+    }, 1000)
   ).current;
 
   const handleSearch = (searchQuery: string) => {

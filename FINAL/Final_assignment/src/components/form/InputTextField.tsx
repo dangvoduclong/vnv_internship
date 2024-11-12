@@ -17,6 +17,7 @@ interface InputTextFieldProps {
   label?: string;
   InputProps?: object;
   initialValue?: string;
+  disabled?: boolean;
 }
 
 const InputTextField: React.FC<InputTextFieldProps> = ({
@@ -26,6 +27,7 @@ const InputTextField: React.FC<InputTextFieldProps> = ({
   label,
   InputProps,
   initialValue,
+  disabled = false,
 }) => {
   const [showPassword, setShowPassword] = useState(false);
   const handleClickShowPassword = () => setShowPassword((prev) => !prev);
@@ -98,6 +100,7 @@ const InputTextField: React.FC<InputTextFieldProps> = ({
                 },
                 marginTop: 1.5,
               }}
+              disabled={disabled}
               onInput={(e) => {
                 if (name === "code") {
                   if (e.target instanceof HTMLInputElement) {

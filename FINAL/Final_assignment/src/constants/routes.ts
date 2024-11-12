@@ -4,6 +4,7 @@ export const ROUTES = {
   ACCOUNT: "account",
   ADMIN: "admins",
   DOULA: "doulas",
+  PACKAGE: "package",
   CLIENT: "client",
   ARTICLE: "article",
   PD_SESSION: "pd-sessions",

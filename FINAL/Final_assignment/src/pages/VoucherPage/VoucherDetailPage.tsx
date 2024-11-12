@@ -1,13 +1,35 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useGetVoucherById } from "../../hooks/voucher/useVoucher";
 import Loading from "../../components/common/Loading";
-import { IconButton } from "@mui/material";
+import {
+  IconButton,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TablePagination,
+  TableRow,
+} from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import useQueryParams from "../../hooks/common/useQueryParams";
+import { useGetDoulaVoucherId } from "../../hooks/doula-management/useDoulaManagement";
+import { QUERY_DEFAULT } from "../../constants/queryDefault";
 
 const VoucherDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const { data: voucherID, loading, error } = useGetVoucherById(id ?? "", !!id);
+
+  const { queryParams, handleChangePageIndex, handleChangeLimit } =
+    useQueryParams(QUERY_DEFAULT.ADMIN_DOULA);
+
+  const { data: { data: doulaID = [], metadata } = {}, act: getDoulaId } =
+    useGetDoulaVoucherId(true, { ...queryParams, f_voucherId: id });
+
+  useEffect(() => {
+    getDoulaId(queryParams);
+  }, [id]);
 
   if (loading) {
     return (
@@ -20,6 +42,16 @@ const VoucherDetailPage: React.FC = () => {
   if (error) {
     return <div>Error: {error.message}</div>;
   }
+
+  const handleChangePage = (event: unknown, newPage: number) => {
+    handleChangePageIndex(newPage + 1);
+  };
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    handleChangeLimit(+event.target.value);
+  };
 
   const formatDateTime = (dateStr: string) => {
     const date = new Date(dateStr);
@@ -93,24 +125,45 @@ const VoucherDetailPage: React.FC = () => {
         </div>
 
         {/* Table for Take by and Date */}
-        <div className="mt-4">
-          <table className="min-w-full border">
-            <thead className="bg-gray-100">
-              <tr>
-                <th className="p-2 border-r text-left">Take by</th>
-                <th className="p-2 text-left">Date</th>
-              </tr>
-            </thead>
-            <tbody>
-              {voucherID?.data?.usageRecords?.map((record, index) => (
-                <tr key={index} className="border-t">
-                  <td className="p-2 border-r">{record.name}</td>
-                  <td className="p-2">{record.date}</td>
-                </tr>
+        <TableContainer className="mt-4">
+          <Table className="min-w-full border">
+            <TableHead className="bg-gray-100">
+              <TableRow>
+                <TableCell className="p-2 border-r text-left">
+                  Take by
+                </TableCell>
+                <TableCell className="p-2 text-left">Date</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {doulaID?.map((record, index) => (
+                <TableRow key={index} className="border-t">
+                  <TableCell className="p-2 border-r">
+                    {record.doulaUser.fullName}
+                  </TableCell>
+                  <TableCell className="p-2">
+                    {
+                      new Date(record.createdAt ?? "")
+                        .toISOString()
+                        .split("T")[0]
+                    }
+                  </TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
-        </div>
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25, 75]}
+          component="div"
+          count={
+            metadata?.totalCount !== undefined ? Number(metadata.totalCount) : 0
+          }
+          rowsPerPage={Number(queryParams.limit)}
+          page={queryParams.page - 1}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
       </div>
     </div>
   );

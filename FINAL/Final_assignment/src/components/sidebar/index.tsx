@@ -5,11 +5,12 @@ import LibraryBooksOutlinedIcon from "@mui/icons-material/LibraryBooksOutlined";
 import ZoomInOutlinedIcon from "@mui/icons-material/ZoomInOutlined";
 import CardGiftcardOutlinedIcon from "@mui/icons-material/CardGiftcardOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SubMenu from "./SubMenu";
 import MenuItem from "./MenuItem";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
+import { useAuth } from "../../hooks/common/useAuth";
 
 interface SidebarProps {
   className?: string;
@@ -17,6 +18,15 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ className }) => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const { user, setUser } = useAuth();
+  useEffect(() => {
+    const savedUser = localStorage.getItem("user");
+
+    if (savedUser) {
+      const user = JSON.parse(savedUser);
+      setUser(user);
+    }
+  }, []);
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
@@ -98,7 +108,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
               className="rounded-full h-10 w-10"
             />
             <span className="ms-2 text-gray-900 dark:text-white">
-              Super Admin
+              {user?.firstName}&nbsp;{user?.lastName}
             </span>
           </div>
           <div className="relative">

@@ -8,6 +8,8 @@ export const END_POINTS = {
   PD_SESSION: "/pd-sessions",
   CATEGORIES: "/categories",
   VOUCHER: "/vouchers",
+  DOULA_VOUCHER: "/doula-vouchers",
+  DOULA_PACKAGE: "/doula-packages",
   HELP_DOCS: "/help-documents",
   SETTINGS: "/trending-keywords",
 };

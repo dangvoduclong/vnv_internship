@@ -13,6 +13,7 @@ import {
 } from "../../hooks/doula-management/useDoulaManagement";
 import ConfirmModal from "../../components/modal/common/ConfirmModal";
 import toast from "react-hot-toast";
+import { QUERY_DEFAULT } from "../../constants/queryDefault";
 
 interface User {
   [key: string]: string | number | undefined;
@@ -39,8 +40,6 @@ interface RowData {
   status: string;
 }
 
-const queryDefaults = { page: 1, limit: 25 };
-
 const DoulaManagement: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [formData, setFormData] = useState<RowData | null>(null);
@@ -56,7 +55,7 @@ const DoulaManagement: React.FC = () => {
     handleChangePageIndex,
     handleChangeLimit,
     handleRequestSort,
-  } = useQueryParams(queryDefaults);
+  } = useQueryParams(QUERY_DEFAULT.ADMIN_DOULA);
 
   const {
     data: { data: doula = [], metadata } = {},
@@ -169,7 +168,7 @@ const DoulaManagement: React.FC = () => {
     if (formData) {
       await updateDoula(formData.id, formData);
       setIsConfirmOpen(false);
-      getDoula(queryDefaults);
+      getDoula(QUERY_DEFAULT.ADMIN_DOULA);
       setFormData(null);
       toast.success("Updated successfully");
     }
@@ -188,8 +187,6 @@ const DoulaManagement: React.FC = () => {
         setRow_id(row.id);
         selectedDoulaRef.current = row;
         console.log(row);
-
-        //setSelectedDoula(row);
         setIsOpen(true);
       },
     },
